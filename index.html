@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,64 +10,96 @@
     <!-- Iconos de Alta Fidelidad -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Tipografía Técnica -->
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700;800&display=swap"
+        rel="stylesheet">
     <style>
-        body { 
-            font-family: 'JetBrains+Mono', monospace; 
+        body {
+            font-family: 'JetBrains+Mono', monospace;
             background-color: #050505;
         }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        /* Efectos de Resplandor Personalizados */
-        .glow-cyan { box-shadow: 0 0 20px rgba(34, 211, 238, 0.1); }
-        .glow-text { text-shadow: 0 0 10px rgba(34, 211, 238, 0.5); }
-        
-        @keyframes scan {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
         }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Efectos de Resplandor Personalizados */
+        .glow-cyan {
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.1);
+        }
+
+        .glow-text {
+            text-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
+        }
+
+        @keyframes scan {
+            0% {
+                transform: translateY(-100%);
+            }
+
+            100% {
+                transform: translateY(100%);
+            }
+        }
+
         .scan-line {
             animation: scan 3s linear infinite;
             background: linear-gradient(to bottom, transparent, rgba(34, 211, 238, 0.1), transparent);
         }
     </style>
 </head>
+
 <body class="text-slate-400 selection:bg-cyan-500/30 overflow-x-hidden">
 
     <!-- Botón Flotante de WhatsApp (Dark Tech Style) -->
-    <a href="https://wa.me/50242989037" target="_blank" rel="noopener noreferrer" 
-       class="fixed bottom-6 right-6 z-[100] flex items-center gap-3 px-6 py-4 bg-black border border-white/10 text-white rounded-sm hover:border-cyan-400 hover:text-cyan-400 transition-all duration-500 shadow-2xl group overflow-hidden">
+    <a href="https://wa.me/50242989037" target="_blank" rel="noopener noreferrer"
+        class="fixed bottom-6 right-6 z-[100] flex items-center gap-3 px-6 py-4 bg-black border border-white/10 text-white rounded-sm hover:border-cyan-400 hover:text-cyan-400 transition-all duration-500 shadow-2xl group overflow-hidden">
         <div class="absolute inset-0 bg-cyan-400/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-        <span class="hidden sm:inline text-[9px] font-bold tracking-[0.3em] uppercase opacity-70 group-hover:opacity-100 transition-opacity">Contact_Node</span>
+        <span
+            class="hidden sm:inline text-[9px] font-bold tracking-[0.3em] uppercase opacity-70 group-hover:opacity-100 transition-opacity">Contact_Node</span>
         <div class="group-hover:scale-110 transition-transform duration-300">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                <path
+                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
             </svg>
         </div>
     </a>
 
     <!-- Fondo de Cuadrícula y Luces -->
     <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div class="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px]"></div>
-        <div class="absolute top-0 left-1/4 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-cyan-500/10 blur-[100px] rounded-full opacity-40"></div>
-        <div class="absolute bottom-0 right-1/4 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-indigo-500/10 blur-[100px] rounded-full opacity-30"></div>
+        <div
+            class="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px]">
+        </div>
+        <div
+            class="absolute top-0 left-1/4 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-cyan-500/10 blur-[100px] rounded-full opacity-40">
+        </div>
+        <div
+            class="absolute bottom-0 right-1/4 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-indigo-500/10 blur-[100px] rounded-full opacity-30">
+        </div>
     </div>
 
     <!-- Navegación Adaptativa -->
     <nav id="navbar" class="fixed top-0 w-full z-50 transition-all duration-300 py-8">
         <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
-            <div class="flex items-center gap-3 group cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">
-                <div class="w-8 h-8 bg-white flex items-center justify-center rounded-[4px] group-hover:bg-cyan-400 transition-colors duration-500">
+            <div class="flex items-center gap-3 group cursor-pointer"
+                onclick="window.scrollTo({top:0, behavior:'smooth'})">
+                <div
+                    class="w-8 h-8 bg-white flex items-center justify-center rounded-[4px] group-hover:bg-cyan-400 transition-colors duration-500">
                     <i data-lucide="binary" class="text-black w-5 h-5"></i>
                 </div>
-                <span class="text-white font-bold tracking-[0.2em] text-sm uppercase">CRGM<span class="text-cyan-400">.Systems</span></span>
+                <span class="text-white font-bold tracking-[0.2em] text-sm uppercase">CRGM<span
+                        class="text-cyan-400">.Systems</span></span>
             </div>
-            
+
             <div class="hidden md:flex items-center gap-8 text-[10px] tracking-widest font-bold uppercase">
                 <a href="#directory" class="hover:text-white transition-colors">Repository</a>
                 <a href="#about" class="hover:text-white transition-colors">Engine</a>
-                <a href="mailto: rdgraysoninc@gmail.com" class="px-4 py-2 border border-white/10 hover:border-cyan-400 hover:text-cyan-400 transition-all rounded-[2px] bg-white/5">
+                <a href="mailto: rdgraysoninc@gmail.com"
+                    class="px-4 py-2 border border-white/10 hover:border-cyan-400 hover:text-cyan-400 transition-all rounded-[2px] bg-white/5">
                     Contact_Init
                 </a>
             </div>
@@ -76,7 +109,8 @@
             </button>
         </div>
 
-        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-black/95 border-b border-white/5 p-8 flex flex-col gap-8 text-[12px] font-bold tracking-widest uppercase">
+        <div id="mobile-menu"
+            class="hidden md:hidden absolute top-full left-0 w-full bg-black/95 border-b border-white/5 p-8 flex flex-col gap-8 text-[12px] font-bold tracking-widest uppercase">
             <a href="#directory" onclick="toggleMobileMenu()" class="text-white">Directory</a>
             <a href="#about" onclick="toggleMobileMenu()">Engine</a>
             <a href="https://wa.me/50242989037" class="text-cyan-400">WhatsApp_Node</a>
@@ -86,12 +120,14 @@
     <!-- Hero Section -->
     <section class="relative pt-40 md:pt-60 pb-24 md:pb-40 px-6">
         <div class="max-w-6xl mx-auto">
-            <div class="mb-8 inline-flex items-center gap-3 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[9px] md:text-[10px] font-bold tracking-tighter uppercase">
+            <div
+                class="mb-8 inline-flex items-center gap-3 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[9px] md:text-[10px] font-bold tracking-tighter uppercase">
                 <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
                 System_Status: Optimal // Build_Stable_v2
             </div>
-            
-            <h1 class="text-5xl sm:text-7xl md:text-9xl font-black text-white leading-tight tracking-tighter mb-10 uppercase">
+
+            <h1
+                class="text-5xl sm:text-7xl md:text-9xl font-black text-white leading-tight tracking-tighter mb-10 uppercase">
                 CRGM <br>
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-white/10">
                     Software <br class="md:hidden"> Labs
@@ -100,13 +136,17 @@
 
             <div class="max-w-3xl border-l-2 border-cyan-400/30 pl-6 md:pl-10 mt-12">
                 <p class="text-lg md:text-2xl text-slate-300 leading-relaxed mb-10 font-light">
-                    Ingeniería multiplataforma diseñada para la eficiencia absoluta. Desarrollamos herramientas nativas que eliminan la fricción entre el código y el usuario final.
+                    Ingeniería multiplataforma diseñada para la eficiencia absoluta. Desarrollamos herramientas nativas
+                    que eliminan la fricción entre el código y el usuario final.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-5 uppercase">
-                    <a href="#directory" class="group px-8 py-5 bg-white text-black font-bold text-xs tracking-widest hover:bg-cyan-400 transition-all flex items-center justify-center gap-3 shadow-[0_0_30px_rgba(255,255,255,0.05)]">
-                        Explore_Catalog <i data-lucide="chevron-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                    <a href="#directory"
+                        class="group px-8 py-5 bg-white text-black font-bold text-xs tracking-widest hover:bg-cyan-400 transition-all flex items-center justify-center gap-3 shadow-[0_0_30px_rgba(255,255,255,0.05)]">
+                        Explore_Catalog <i data-lucide="chevron-right"
+                            class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
                     </a>
-                    <a href="#about" class="px-8 py-5 border border-white/10 text-white font-bold text-xs tracking-widest hover:border-white hover:bg-white/5 transition-all text-center">
+                    <a href="#about"
+                        class="px-8 py-5 border border-white/10 text-white font-bold text-xs tracking-widest hover:border-white hover:bg-white/5 transition-all text-center">
                         Learn_More
                     </a>
                 </div>
@@ -118,12 +158,18 @@
     <div class="border-y border-white/5 bg-white/[0.01] py-8 overflow-hidden">
         <div class="max-w-6xl mx-auto px-6">
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 md:gap-4 opacity-30">
-                <div class="flex items-center gap-3 text-[10px] font-bold tracking-[0.3em] uppercase"><i data-lucide="monitor" class="w-4 h-4 text-cyan-400"></i> Windows</div>
-                <div class="flex items-center gap-3 text-[10px] font-bold tracking-[0.3em] uppercase"><i data-lucide="apple" class="w-4 h-4 text-cyan-400"></i> Darwin</div>
-                <div class="flex items-center gap-3 text-[10px] font-bold tracking-[0.3em] uppercase"><i data-lucide="terminal" class="w-4 h-4 text-cyan-400"></i> Linux</div>
-                <div class="flex items-center gap-3 text-[10px] font-bold tracking-[0.3em] uppercase"><i data-lucide="smartphone" class="w-4 h-4 text-cyan-400"></i> Android</div>
-                <div class="flex items-center gap-3 text-[10px] font-bold tracking-[0.3em] uppercase"><i data-lucide="smartphone" class="w-4 h-4 text-cyan-400"></i> iOS</div>
-                <div class="flex items-center gap-3 text-[10px] font-bold tracking-[0.3em] uppercase"><i data-lucide="globe" class="w-4 h-4 text-cyan-400"></i> Web</div>
+                <div class="flex items-center gap-3 text-[10px] font-bold tracking-[0.3em] uppercase"><i
+                        data-lucide="monitor" class="w-4 h-4 text-cyan-400"></i> Windows</div>
+                <div class="flex items-center gap-3 text-[10px] font-bold tracking-[0.3em] uppercase"><i
+                        data-lucide="apple" class="w-4 h-4 text-cyan-400"></i> Darwin</div>
+                <div class="flex items-center gap-3 text-[10px] font-bold tracking-[0.3em] uppercase"><i
+                        data-lucide="terminal" class="w-4 h-4 text-cyan-400"></i> Linux</div>
+                <div class="flex items-center gap-3 text-[10px] font-bold tracking-[0.3em] uppercase"><i
+                        data-lucide="smartphone" class="w-4 h-4 text-cyan-400"></i> Android</div>
+                <div class="flex items-center gap-3 text-[10px] font-bold tracking-[0.3em] uppercase"><i
+                        data-lucide="smartphone" class="w-4 h-4 text-cyan-400"></i> iOS</div>
+                <div class="flex items-center gap-3 text-[10px] font-bold tracking-[0.3em] uppercase"><i
+                        data-lucide="globe" class="w-4 h-4 text-cyan-400"></i> Web</div>
             </div>
         </div>
     </div>
@@ -133,24 +179,34 @@
         <div class="max-w-6xl mx-auto">
             <div class="flex flex-col lg:flex-row justify-between items-baseline mb-16 md:mb-24 gap-10">
                 <div class="max-w-xl">
-                    <h2 class="text-white text-3xl md:text-4xl font-black tracking-tighter flex items-center gap-4 uppercase">
-                        <i data-lucide="box" class="text-cyan-400 w-8 h-8"></i> Repository_Index
+                    <h2
+                        class="text-white text-3xl md:text-4xl font-black tracking-tighter flex items-center gap-4 uppercase">
+                        <i data-lucide="github" class="text-cyan-400 w-8 h-8"></i> Repository_Index
                     </h2>
                     <p class="text-xs md:text-sm text-slate-500 mt-4 leading-relaxed">
-                        Navega a través de nuestro ecosistema. Binarios optimizados para hardware nativo mediante compilación avanzada.
+                        Repositorios públicos de <a href="https://github.com/robindanilo2218" target="_blank"
+                            class="text-cyan-400/70 hover:text-cyan-400 transition-colors">github.com/robindanilo2218</a>
+                        — actualizados en tiempo real vía GitHub API.
                     </p>
                 </div>
-                
-                <div id="filter-tabs" class="flex flex-wrap gap-2 border-b border-white/5 pb-2 w-full lg:w-auto uppercase">
-                    <button onclick="filterApps('ALL')" class="tab-btn active px-5 py-2 text-[10px] font-bold tracking-widest transition-all rounded-sm text-cyan-400 bg-cyan-500/10 border border-cyan-400/20" data-category="ALL">[ALL]</button>
-                    <button onclick="filterApps('SYSTEM')" class="tab-btn px-5 py-2 text-[10px] font-bold tracking-widest transition-all rounded-sm text-slate-500 hover:text-white" data-category="SYSTEM">[SYSTEM]</button>
-                    <button onclick="filterApps('INTERFACE')" class="tab-btn px-5 py-2 text-[10px] font-bold tracking-widest transition-all rounded-sm text-slate-500 hover:text-white" data-category="INTERFACE">[INTERFACE]</button>
-                    <button onclick="filterApps('MOBILE')" class="tab-btn px-5 py-2 text-[10px] font-bold tracking-widest transition-all rounded-sm text-slate-500 hover:text-white" data-category="MOBILE">[MOBILE]</button>
+
+                <div id="filter-tabs"
+                    class="flex flex-wrap gap-2 border-b border-white/5 pb-2 w-full lg:w-auto uppercase">
+                    <button onclick="filterRepos('ALL')"
+                        class="tab-btn active px-5 py-2 text-[10px] font-bold tracking-widest transition-all rounded-sm text-cyan-400 bg-cyan-500/10 border border-cyan-400/20"
+                        data-category="ALL">[ALL]</button>
                 </div>
             </div>
 
             <div id="apps-grid" class="grid grid-cols-1 gap-[1px] bg-white/5 border border-white/5 shadow-2xl">
-                <!-- Inyectado vía JS -->
+                <!-- Cargando repos desde GitHub API... -->
+                <div id="repos-loading" class="p-20 text-center text-slate-500 bg-[#050505]">
+                    <div class="inline-flex flex-col items-center gap-4">
+                        <div class="w-8 h-8 border-2 border-cyan-400/30 border-t-cyan-400 rounded-full animate-spin">
+                        </div>
+                        <p class="text-[10px] font-bold tracking-widest uppercase">Fetching_Repositories...</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -159,37 +215,50 @@
     <section id="about" class="py-24 md:py-40 px-6 border-t border-white/5">
         <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div>
-                <h2 class="text-white text-3xl font-black mb-8 tracking-tighter uppercase">Arquitectura de Ingeniería</h2>
+                <h2 class="text-white text-3xl font-black mb-8 tracking-tighter uppercase">Arquitectura de Ingeniería
+                </h2>
                 <div class="space-y-8">
                     <div class="flex gap-6 group">
-                        <div class="w-12 h-12 shrink-0 bg-white/5 border border-white/10 flex items-center justify-center text-cyan-400 transition-colors group-hover:bg-cyan-400 group-hover:text-black">
+                        <div
+                            class="w-12 h-12 shrink-0 bg-white/5 border border-white/10 flex items-center justify-center text-cyan-400 transition-colors group-hover:bg-cyan-400 group-hover:text-black">
                             <i data-lucide="zap"></i>
                         </div>
                         <div>
                             <h4 class="text-white font-bold text-sm mb-2 tracking-widest uppercase">Velocidad Pura</h4>
-                            <p class="text-xs leading-relaxed text-slate-500">Optimizamos cada ciclo de instrucción para garantizar tiempos de respuesta en microsegundos.</p>
+                            <p class="text-xs leading-relaxed text-slate-500">Optimizamos cada ciclo de instrucción para
+                                garantizar tiempos de respuesta en microsegundos.</p>
                         </div>
                     </div>
                     <div class="flex gap-6 group">
-                        <div class="w-12 h-12 shrink-0 bg-white/5 border border-white/10 flex items-center justify-center text-cyan-400 transition-colors group-hover:bg-cyan-400 group-hover:text-black">
+                        <div
+                            class="w-12 h-12 shrink-0 bg-white/5 border border-white/10 flex items-center justify-center text-cyan-400 transition-colors group-hover:bg-cyan-400 group-hover:text-black">
                             <i data-lucide="shield"></i>
                         </div>
                         <div>
                             <h4 class="text-white font-bold text-sm mb-2 tracking-widest uppercase">Seguridad Cero</h4>
-                            <p class="text-xs leading-relaxed text-slate-500">Cifrado asimétrico y validación de integridad en cada capa de la aplicación.</p>
+                            <p class="text-xs leading-relaxed text-slate-500">Cifrado asimétrico y validación de
+                                integridad en cada capa de la aplicación.</p>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="relative bg-[#0a0a0a] border border-white/10 p-10 rounded-sm font-mono text-xs space-y-3 overflow-hidden group">
+
+            <div
+                class="relative bg-[#0a0a0a] border border-white/10 p-10 rounded-sm font-mono text-xs space-y-3 overflow-hidden group">
                 <div class="absolute inset-0 scan-line pointer-events-none opacity-20"></div>
-                <div class="flex gap-2 mb-6"><div class="w-2 h-2 rounded-full bg-red-500/50"></div><div class="w-2 h-2 rounded-full bg-yellow-500/50"></div><div class="w-2 h-2 rounded-full bg-green-500/50"></div></div>
-                <p class="text-cyan-400 lowercase">crgm@systems:~$ <span class="text-white uppercase">fetch --status</span></p>
+                <div class="flex gap-2 mb-6">
+                    <div class="w-2 h-2 rounded-full bg-red-500/50"></div>
+                    <div class="w-2 h-2 rounded-full bg-yellow-500/50"></div>
+                    <div class="w-2 h-2 rounded-full bg-green-500/50"></div>
+                </div>
+                <p class="text-cyan-400 lowercase">crgm@systems:~$ <span class="text-white uppercase">fetch
+                        --status</span></p>
                 <p class="text-slate-600 uppercase">Verificando nodos de contacto...</p>
                 <p class="text-green-500 uppercase">WHATSAPP_NODE: ACTIVE_ON_+502_42989037</p>
-                <p class="text-cyan-400 lowercase">crgm@systems:~$ <span class="text-white uppercase">init --success</span></p>
+                <p class="text-cyan-400 lowercase">crgm@systems:~$ <span class="text-white uppercase">init
+                        --success</span></p>
                 <p class="text-slate-400 uppercase">Ready to deploy across all sectors.</p>
+                <p class="text-slate-400 uppercase">crgm: Customer Relationship & Global Management</p>
                 <p class="text-slate-600 animate-pulse">_</p>
             </div>
         </div>
@@ -197,22 +266,42 @@
 
     <!-- Footer -->
     <footer class="pt-24 pb-12 px-6 border-t border-white/5 bg-black/50">
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-16 text-center md:text-left">
+        <div
+            class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-16 text-center md:text-left">
             <div class="max-w-sm mx-auto md:mx-0">
                 <div class="flex items-center justify-center md:justify-start gap-3 mb-6">
-                    <div class="w-6 h-6 bg-white rounded-sm flex items-center justify-center text-black font-black text-[10px]">C</div>
+                    <div
+                        class="w-6 h-6 bg-white rounded-sm flex items-center justify-center text-black font-black text-[10px]">
+                        C</div>
                     <span class="text-white font-bold text-sm tracking-widest uppercase uppercase">CRGM.APP</span>
                 </div>
-                <p class="text-[11px] text-slate-600 font-bold uppercase tracking-widest">Binarios nativos para un mundo sin fricciones.</p>
+                <p class="text-[11px] text-slate-600 font-bold uppercase tracking-widest">Binarios nativos para un mundo
+                    sin fricciones.</p>
             </div>
-            
+
             <div class="flex flex-col md:flex-row gap-12 mx-auto md:mx-0">
                 <div class="flex flex-col gap-4">
                     <span class="text-[10px] text-white font-bold uppercase tracking-widest">Connect_Index</span>
                     <div class="flex gap-4 justify-center md:justify-start uppercase">
-                        <a href="https://wa.me/50200000000" class="w-10 h-10 flex items-center justify-center border border-white/5 hover:border-cyan-400 text-slate-400 bg-white/5 transition-all"><i data-lucide="message-square" class="w-5 h-5"></i></a>
-                        <a href="mailto:dev@crgm.app" class="w-10 h-10 flex items-center justify-center border border-white/5 hover:border-cyan-400 text-slate-400 bg-white/5 transition-all"><i data-lucide="mail" class="w-5 h-5"></i></a>
-                        <a href="#" class="w-10 h-10 flex items-center justify-center border border-white/5 hover:border-cyan-400 text-slate-400 bg-white/5 transition-all"><i data-lucide="github" class="w-5 h-5"></i></a>
+                        <a href="https://wa.me/50242989037"
+                            class="w-10 h-10 flex items-center justify-center border border-white/5 hover:border-cyan-400 hover:bg-cyan-400/5 text-slate-400 bg-white/5 transition-all group shadow-[0_0_0_rgba(34,211,238,0)] hover:shadow-[0_0_20px_rgba(34,211,238,0.2)]">
+                            <i data-lucide="message-square"
+                                class="w-5 h-5 group-hover:text-cyan-400 transition-colors"></i>
+                        </a>
+                        <a href="mailto:rdgraysoninc@gmail.com"
+                            class="w-10 h-10 flex items-center justify-center border border-white/5 hover:border-cyan-400 hover:bg-cyan-400/5 text-slate-400 bg-white/5 transition-all group shadow-[0_0_0_rgba(34,211,238,0)] hover:shadow-[0_0_20px_rgba(34,211,238,0.2)]">
+                            <i data-lucide="mail" class="w-5 h-5 group-hover:text-cyan-400 transition-colors"></i>
+                        </a>
+                        <a href="https://github.com/robindanilo2218" target="_blank" rel="noopener noreferrer"
+                            class="w-10 h-10 flex items-center justify-center border border-white/5 hover:border-cyan-400 text-slate-400 bg-white/5 transition-all group">
+                            <svg aria-hidden="true" focusable="false"
+                                class="octicon octicon-mark-github w-5 h-5 group-hover:text-cyan-400 transition-colors"
+                                viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M10.226 17.284c-2.965-.36-5.054-2.493-5.054-5.256 0-1.123.404-2.336 1.078-3.144-.292-.741-.247-2.314.09-2.965.898-.112 2.111.36 2.83 1.01.853-.269 1.752-.404 2.853-.404 1.1 0 1.999.135 2.807.382.696-.629 1.932-1.1 2.83-.988.315.606.36 2.179.067 2.942.72.854 1.101 2 1.101 3.167 0 2.763-2.089 4.852-5.098 5.234.763.494 1.28 1.572 1.28 2.807v2.336c0 .674.561 1.056 1.235.786 4.066-1.55 7.255-5.615 7.255-10.646C23.5 6.188 18.334 1 11.978 1 5.62 1 .5 6.188.5 12.545c0 4.986 3.167 9.12 7.435 10.669.606.225 1.19-.18 1.19-.786V20.63a2.9 2.9 0 0 1-1.078.224c-1.483 0-2.359-.808-2.987-2.313-.247-.607-.517-.966-1.034-1.033-.27-.023-.359-.135-.359-.27 0-.27.45-.471.898-.471.652 0 1.213.404 1.797 1.235.45.651.921.943 1.483.943.561 0 .92-.202 1.437-.719.382-.381.674-.718.944-.943">
+                                </path>
+                            </svg>
+                        </a>
                     </div>
                 </div>
                 <div class="flex flex-col gap-2">
@@ -222,75 +311,158 @@
                 </div>
             </div>
         </div>
-        <div class="max-w-6xl mx-auto mt-24 text-[9px] text-slate-800 font-bold tracking-[0.4em] uppercase border-t border-white/5 pt-10 text-center uppercase">
+        <div
+            class="max-w-6xl mx-auto mt-24 text-[9px] text-slate-800 font-bold tracking-[0.4em] uppercase border-t border-white/5 pt-10 text-center uppercase">
             &copy; <span id="year"></span> CRGM.APP // INFRAESTRUCTURA DE ALTA DISPONIBILIDAD
         </div>
     </footer>
 
     <script>
-        // --- Registro de Aplicaciones (Fácil de añadir más) ---
-        const APPS_DATA = [
-            { id: "01", name: "CoreSync Engine", tagline: "Sincronización de bajo nivel.", description: "Motor de alto rendimiento para movimiento de datos masivos entre entornos híbridos.", platforms: ["Win", "Lin", "Mac"], category: "SYSTEM", version: "v4.2.0", link: "#" },
-            { id: "02", name: "Lumina UI Kit", tagline: "Interfaces cuánticas reactivas.", description: "Componentes acelerados por hardware para paneles de control de datos en tiempo real.", platforms: ["Web", "iOS", "And"], category: "INTERFACE", version: "v1.5.2", link: "#" },
-            { id: "03", name: "Pulse Mobile", tagline: "Monitorización biométrica cifrada.", description: "IA local para predicción de salud sin compromiso de privacidad en la nube.", platforms: ["iOS", "And"], category: "MOBILE", version: "v2.1.0", link: "#" },
-            { id: "04", name: "BitGuard Proxy", tagline: "Seguridad de red invisible.", description: "Capa de firewall a nivel de kernel para protección contra vectores de ataque de día cero.", platforms: ["Lin", "Mac"], category: "SYSTEM", version: "v0.9.8", link: "#" },
-            { id: "05", name: "Zenith Editor", tagline: "Escritura técnica enfocada.", description: "Entorno minimalista para documentación técnica con renderizado LaTeX y Markdown.", platforms: ["Win", "Web"], category: "INTERFACE", version: "v3.0.1", link: "#" }
-        ];
+        // ============================================================
+        //  GitHub Repos — live feed from github.com/robindanilo2218
+        // ============================================================
+        const GH_USER = 'robindanilo2218';
+        const GH_API = `https://api.github.com/users/${GH_USER}/repos?per_page=100&sort=updated&type=public`;
 
-        // --- Motor de Renderizado ---
-        function renderApps(filter = 'ALL') {
+        let ALL_REPOS = [];   // raw data from API
+        let activeFilter = 'ALL';
+
+        // Language → display colour mapping
+        const LANG_COLORS = {
+            'JavaScript': '#F7DF1E', 'TypeScript': '#3178C6', 'HTML': '#E34F26',
+            'CSS': '#563D7C', 'Python': '#3572A5', 'Java': '#B07219',
+            'C': '#555555', 'C++': '#F34B7D', 'C#': '#178600',
+            'Go': '#00ADD8', 'Rust': '#DEA584', 'PHP': '#4F5D95',
+            'Ruby': '#701516', 'Swift': '#F05138', 'Kotlin': '#A97BFF',
+            'Shell': '#89E051', 'PowerShell': '#012456',
+        };
+
+        function langDot(lang) {
+            const color = LANG_COLORS[lang] || '#8b949e';
+            return `<span style="background:${color}" class="inline-block w-2.5 h-2.5 rounded-full"></span>`;
+        }
+
+        // Build the language filter tabs dynamically
+        function buildFilterTabs(repos) {
+            const langs = ['ALL', ...new Set(repos.map(r => r.language).filter(Boolean)).values()];
+            const container = document.getElementById('filter-tabs');
+            container.innerHTML = langs.map(lang => {
+                const isActive = lang === 'ALL';
+                return `<button onclick="filterRepos('${lang}')" 
+                    class="tab-btn ${isActive ? 'active text-cyan-400 bg-cyan-500/10 border border-cyan-400/20' : 'text-slate-500 hover:text-white'} px-5 py-2 text-[10px] font-bold tracking-widest transition-all rounded-sm uppercase"
+                    data-category="${lang}">[${lang}]</button>`;
+            }).join('');
+        }
+
+        function renderRepos(filter = 'ALL') {
+            activeFilter = filter;
             const grid = document.getElementById('apps-grid');
-            const filtered = filter === 'ALL' ? APPS_DATA : APPS_DATA.filter(app => app.category === filter);
-            
-            grid.innerHTML = filtered.length ? filtered.map(app => `
+            const list = filter === 'ALL'
+                ? ALL_REPOS
+                : ALL_REPOS.filter(r => r.language === filter);
+
+            if (!list.length) {
+                grid.innerHTML = `
+                    <div class="p-20 text-center text-slate-600 bg-[#050505] uppercase">
+                        <i data-lucide="search-x" class="mx-auto mb-4 opacity-20 w-10 h-10"></i>
+                        <p class="text-sm font-bold tracking-widest">No_Repos_Found</p>
+                    </div>`;
+                lucide.createIcons();
+                return;
+            }
+
+            grid.innerHTML = list.map((repo, idx) => {
+                const id = String(idx + 1).padStart(2, '0');
+                const lang = repo.language || 'Unknown';
+                const desc = repo.description || 'Sin descripción disponible.';
+                const updated = new Date(repo.updated_at).toLocaleDateString('es-GT', { year: 'numeric', month: 'short', day: 'numeric' });
+                const stars = repo.stargazers_count;
+                const forks = repo.forks_count;
+                const topics = (repo.topics || []).slice(0, 4);
+
+                return `
                 <div class="group relative bg-[#050505] p-8 md:p-12 flex flex-col md:flex-row md:items-center justify-between hover:bg-white/[0.02] transition-all overflow-hidden border-b border-white/5">
                     <div class="absolute left-0 top-0 w-1 md:w-2 h-full bg-cyan-400 scale-y-0 group-hover:scale-y-100 transition-transform duration-500 origin-bottom"></div>
                     <div class="flex flex-col md:flex-row items-start gap-8 flex-1">
-                        <span class="text-xs font-bold text-slate-700 font-mono mt-1 group-hover:text-cyan-400/50 transition-colors uppercase">Id_${app.id}</span>
+                        <span class="text-xs font-bold text-slate-700 font-mono mt-1 group-hover:text-cyan-400/50 transition-colors uppercase shrink-0">Id_${id}</span>
                         <div class="flex-1 max-w-2xl">
-                            <div class="flex items-center gap-4">
-                                <h3 class="text-2xl font-bold text-white group-hover:translate-x-2 transition-transform duration-300 uppercase">${app.name}</h3>
-                                <span class="text-[9px] px-2 py-1 bg-white/5 rounded text-slate-500 border border-white/5 uppercase">${app.version}</span>
+                            <div class="flex flex-wrap items-center gap-3">
+                                <h3 class="text-xl md:text-2xl font-bold text-white group-hover:translate-x-2 transition-transform duration-300 uppercase">${repo.name}</h3>
+                                ${repo.fork ? '<span class="text-[9px] px-2 py-1 bg-yellow-500/10 rounded text-yellow-400 border border-yellow-500/20 uppercase">Fork</span>' : ''}
+                                ${repo.archived ? '<span class="text-[9px] px-2 py-1 bg-red-500/10 rounded text-red-400 border border-red-500/20 uppercase">Archived</span>' : ''}
                             </div>
-                            <p class="text-cyan-400/80 text-[10px] font-bold mt-2 uppercase tracking-widest uppercase">${app.tagline}</p>
-                            <p class="text-sm text-slate-500 mt-4 leading-relaxed">${app.description}</p>
-                            <div class="flex flex-wrap gap-2 mt-6 uppercase">
-                                ${app.platforms.map(p => `<span class="text-[9px] border border-white/10 px-3 py-1 rounded-sm text-slate-400 font-bold uppercase group-hover:border-cyan-400/20 transition-colors">${p}</span>`).join('')}
+                            <div class="flex items-center gap-3 mt-2">
+                                ${langDot(repo.language)}
+                                <p class="text-cyan-400/80 text-[10px] font-bold uppercase tracking-widest">${lang}</p>
+                                <span class="text-slate-700">|</span>
+                                <p class="text-slate-600 text-[10px] font-bold uppercase tracking-widest">Updated: ${updated}</p>
+                            </div>
+                            <p class="text-sm text-slate-500 mt-4 leading-relaxed">${desc}</p>
+                            <div class="flex flex-wrap gap-3 mt-5 items-center">
+                                <span class="flex items-center gap-1.5 text-[9px] border border-white/10 px-3 py-1 rounded-sm text-slate-400 font-bold uppercase group-hover:border-cyan-400/20 transition-colors">
+                                    <i data-lucide="star" class="w-3 h-3"></i>${stars}
+                                </span>
+                                <span class="flex items-center gap-1.5 text-[9px] border border-white/10 px-3 py-1 rounded-sm text-slate-400 font-bold uppercase group-hover:border-cyan-400/20 transition-colors">
+                                    <i data-lucide="git-fork" class="w-3 h-3"></i>${forks}
+                                </span>
+                                ${topics.map(t => `<span class="text-[9px] border border-white/10 px-3 py-1 rounded-sm text-slate-400 font-bold uppercase group-hover:border-cyan-400/20 transition-colors">${t}</span>`).join('')}
                             </div>
                         </div>
                     </div>
-                    <div class="mt-8 md:mt-0 flex items-center justify-between md:justify-end gap-10">
+                    <div class="mt-8 md:mt-0 flex items-center justify-between md:justify-end gap-8 shrink-0">
                         <div class="hidden xl:block text-right uppercase">
-                            <p class="text-[9px] font-bold text-slate-700 uppercase tracking-widest">Type</p>
-                            <p class="text-xs font-bold text-slate-400 mt-1">${app.category}</p>
+                            <p class="text-[9px] font-bold text-slate-700 uppercase tracking-widest">Visibility</p>
+                            <p class="text-xs font-bold text-slate-400 mt-1">${repo.private ? 'PRIVATE' : 'PUBLIC'}</p>
                         </div>
-                        <a href="${app.link}" class="h-16 w-16 md:h-20 md:w-20 flex items-center justify-center border border-white/10 hover:border-cyan-400 hover:bg-cyan-400 hover:text-black transition-all group-hover:shadow-[0_0_40px_rgba(34,211,238,0.2)] bg-white/[0.02]">
-                            <i data-lucide="download"></i>
+                        <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer"
+                           title="Ver en GitHub"
+                           class="h-16 w-16 md:h-20 md:w-20 flex items-center justify-center border border-white/10 hover:border-cyan-400 hover:bg-cyan-400 hover:text-black transition-all group-hover:shadow-[0_0_40px_rgba(34,211,238,0.2)] bg-white/[0.02]">
+                            <i data-lucide="external-link"></i>
                         </a>
                     </div>
-                </div>
-            `).join('') : `
-                <div class="p-20 text-center text-slate-600 bg-[#050505] uppercase">
-                    <i data-lucide="command" class="mx-auto mb-4 opacity-20 w-10 h-10"></i>
-                    <p class="text-sm font-bold tracking-widest">No_Entries_Found</p>
-                </div>
-            `;
+                </div>`;
+            }).join('');
+
             lucide.createIcons();
         }
 
-        // --- Controladores de Interfaz ---
-        window.filterApps = (category) => {
-            const btns = document.querySelectorAll('.tab-btn');
-            btns.forEach(btn => {
-                if(btn.dataset.category === category) {
-                    btn.className = "tab-btn active px-5 py-2 text-[10px] font-bold tracking-widest transition-all rounded-sm text-cyan-400 bg-cyan-500/10 border border-cyan-400/20";
+        // Update active tab style
+        window.filterRepos = (category) => {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if (btn.dataset.category === category) {
+                    btn.className = 'tab-btn active px-5 py-2 text-[10px] font-bold tracking-widest transition-all rounded-sm uppercase text-cyan-400 bg-cyan-500/10 border border-cyan-400/20';
                 } else {
-                    btn.className = "tab-btn px-5 py-2 text-[10px] font-bold tracking-widest transition-all rounded-sm text-slate-500 hover:text-white";
+                    btn.className = 'tab-btn px-5 py-2 text-[10px] font-bold tracking-widest transition-all rounded-sm uppercase text-slate-500 hover:text-white';
                 }
             });
-            renderApps(category);
+            renderRepos(category);
         };
 
+        // Fetch repos from GitHub public API
+        async function loadGitHubRepos() {
+            try {
+                const res = await fetch(GH_API, {
+                    headers: { 'Accept': 'application/vnd.github.v3+json' }
+                });
+                if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
+                ALL_REPOS = await res.json();
+                // Sort: stars desc, then updated desc
+                ALL_REPOS.sort((a, b) => b.stargazers_count - a.stargazers_count || new Date(b.updated_at) - new Date(a.updated_at));
+                buildFilterTabs(ALL_REPOS);
+                renderRepos('ALL');
+            } catch (err) {
+                console.error(err);
+                document.getElementById('apps-grid').innerHTML = `
+                    <div class="p-20 text-center text-slate-600 bg-[#050505] uppercase">
+                        <i data-lucide="wifi-off" class="mx-auto mb-4 opacity-30 w-10 h-10"></i>
+                        <p class="text-sm font-bold tracking-widest">Error_Fetching_Repos</p>
+                        <p class="text-[10px] mt-3 text-slate-700">${err.message}</p>
+                    </div>`;
+                lucide.createIcons();
+            }
+        }
+
+        // --- Controladores de Interfaz ---
         window.toggleMobileMenu = () => {
             const menu = document.getElementById('mobile-menu');
             const icon = document.getElementById('menu-icon');
@@ -300,8 +472,9 @@
             lucide.createIcons();
         };
 
-        window.onscroll = () => {
-            const nav = document.getElementById('navbar');
+        const nav = document.getElementById('navbar'); // Ahora está afuera
+
+        window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {
                 nav.classList.add('bg-black/95', 'backdrop-blur-md', 'border-b', 'border-white/5', 'py-4');
                 nav.classList.remove('py-8');
@@ -309,13 +482,13 @@
                 nav.classList.remove('bg-black/95', 'backdrop-blur-md', 'border-b', 'border-white/5', 'py-4');
                 nav.classList.add('py-8');
             }
-        };
+        }, { passive: true });
 
         // --- Inicialización ---
         document.getElementById('year').textContent = new Date().getFullYear();
-        renderApps();
         lucide.createIcons();
+        loadGitHubRepos();
     </script>
 </body>
-</html>
 
+</html>
