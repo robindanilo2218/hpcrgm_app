@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Presupuesto de Infraestructura — Aplicación de Censo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:#0d2240; --navy-mid:#1a3a6b; --blue:#1e5bb0; --blue-light:#2d7de0;
+      --accent:#f59e0b; --grey-dark:#1f2937; --grey-mid:#4b5563; --grey-light:#9ca3af;
+      --grey-bg:#f4f6f9; --border:#dce3ec; --white:#ffffff; --green:#059669; --red:#dc2626;
+    }
+    body { font-family:'Roboto',Helvetica,Arial,sans-serif; background:#e8ecf1; color:var(--grey-dark); font-size:13px; line-height:1.6; }
+    .page { max-width:860px; margin:40px auto; background:var(--white); box-shadow:0 4px 40px rgba(0,0,0,0.15); overflow:hidden; }
+
+    /* Header */
+    .header { background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 60%,var(--blue) 100%); padding:52px 60px 44px; position:relative; overflow:hidden; }
+    .header::before { content:''; position:absolute; top:-60px; right:-60px; width:300px; height:300px; border-radius:50%; background:rgba(255,255,255,0.04); }
+    .header-badge { display:inline-block; background:rgba(245,158,11,0.2); color:var(--accent); border:1px solid rgba(245,158,11,0.4); padding:4px 14px; border-radius:20px; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:18px; }
+    .header h1 { font-family:'Roboto Condensed',sans-serif; font-size:30px; font-weight:700; color:var(--white); line-height:1.25; max-width:560px; margin-bottom:12px; }
+    .header-subtitle { color:rgba(255,255,255,0.65); font-size:13.5px; font-weight:300; max-width:520px; }
+    .header-meta { margin-top:32px; display:flex; gap:40px; }
+    .header-meta-item label { display:block; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:rgba(255,255,255,0.45); margin-bottom:2px; }
+    .header-meta-item span { font-size:12.5px; font-weight:500; color:rgba(255,255,255,0.85); }
+    .accent-bar { height:5px; background:linear-gradient(90deg,var(--accent),#f97316,var(--blue-light)); }
+
+    /* Content */
+    .content { padding:48px 60px; }
+    .section { margin-bottom:44px; }
+    .section-title { display:flex; align-items:center; gap:10px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--blue); margin-bottom:16px; }
+    .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+    /* Executive summary */
+    .exec-summary { background:linear-gradient(135deg,#f0f6ff,#e8f0fd); border-left:4px solid var(--blue); border-radius:0 8px 8px 0; padding:20px 24px; }
+    .exec-summary p { color:var(--grey-mid); font-size:13.5px; line-height:1.75; }
+    .exec-summary strong { color:var(--grey-dark); }
+    .exec-summary .highlight { color:var(--blue); font-weight:700; }
+    .insight { display:flex; gap:12px; align-items:flex-start; background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:14px 18px; margin-top:16px; }
+    .insight-icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+    .insight-text { font-size:12.5px; color:#92400e; line-height:1.6; }
+    .insight-text strong { color:#78350f; }
+
+    /* Comparison table */
+    .comparison-table { width:100%; border-collapse:separate; border-spacing:0; border-radius:10px; overflow:hidden; box-shadow:0 1px 8px rgba(0,0,0,0.08); }
+    .comparison-table thead tr { background:var(--navy); }
+    .comparison-table thead th { padding:14px 20px; text-align:left; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.75); }
+    .comparison-table thead th:first-child { color:rgba(255,255,255,0.5); }
+    .comparison-table thead .col-recommended { background:rgba(245,158,11,0.2); color:var(--accent); }
+    .comparison-table tbody tr:nth-child(even) { background:var(--grey-bg); }
+    .comparison-table tbody tr:nth-child(odd) { background:var(--white); }
+    .comparison-table tbody td { padding:13px 20px; font-size:12.5px; color:var(--grey-dark); border-bottom:1px solid var(--border); word-break:break-word; overflow-wrap:break-word; }
+    .comparison-table tbody td:first-child { font-weight:600; color:var(--navy-mid); font-size:11px; text-transform:uppercase; letter-spacing:0.05em; white-space:normal; }
+    .comparison-table tbody td.bad { color:var(--red); font-weight:500; }
+    .comparison-table tbody td.good { color:var(--green); font-weight:600; }
+
+    /* Option cards */
+    .options-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    .option-card { border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+    .option-card-header { padding:16px 20px; background:var(--grey-bg); border-bottom:1px solid var(--border); }
+    .option-tag { display:inline-block; font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:2px 10px; border-radius:20px; margin-bottom:6px; }
+    .option-tag.iaas { background:#e0e7ff; color:#3730a3; }
+    .option-tag.serverless { background:#d1fae5; color:#065f46; }
+    .option-card-header h3 { font-size:15px; font-weight:700; color:var(--navy); }
+    .option-card-header p { font-size:12px; color:var(--grey-light); margin-top:2px; }
+    .option-body { padding:18px 20px; }
+    .recommended-badge { background:linear-gradient(135deg,var(--green),#10b981); color:white; font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:3px 12px; border-radius:20px; display:inline-block; margin-bottom:8px; }
+
+    /* Price lines */
+    .price-line { display:flex; justify-content:space-between; align-items:baseline; padding:8px 0; border-bottom:1px dashed var(--border); gap:12px; }
+    .price-line:last-of-type { border-bottom:none; }
+    .price-desc { font-size:12.5px; color:var(--grey-mid); flex:1; }
+    .price-desc small { display:block; font-size:11px; color:var(--grey-light); margin-top:1px; }
+    .price-val { font-size:13px; font-weight:700; color:var(--grey-dark); text-align:right; white-space:nowrap; }
+    .price-val.free { color:var(--green); }
+    .price-val.low { color:#2563eb; }
+
+    /* Total box */
+    .total-box { margin-top:14px; border-radius:8px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; }
+    .total-box.expensive { background:#fef2f2; border:1px solid #fecaca; }
+    .total-box.cheap { background:#f0fdf4; border:1px solid #86efac; }
+    .total-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; }
+    .total-box.expensive .total-label { color:#991b1b; }
+    .total-box.cheap .total-label { color:#065f46; }
+    .total-amount { font-size:20px; font-weight:900; }
+    .total-box.expensive .total-amount { color:var(--red); }
+    .total-box.cheap .total-amount { color:var(--green); }
+    .total-sub { font-size:10.5px; color:var(--grey-light); margin-top:1px; }
+
+    /* Free tier grid */
+    .free-tier-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:12px 0; }
+    .free-tier-item { background:var(--grey-bg); border:1px solid var(--border); border-radius:8px; padding:12px; text-align:center; }
+    .free-tier-item .ftv { font-size:16px; font-weight:700; color:var(--navy); display:block; }
+    .free-tier-item .ftl { font-size:10.5px; color:var(--grey-light); margin-top:2px; }
+
+    /* Conclusion */
+    .conclusion { background:linear-gradient(135deg,var(--navy),var(--navy-mid)); border-radius:12px; padding:28px 32px; color:white; }
+    .conclusion h3 { font-size:17px; font-weight:700; margin-bottom:12px; display:flex; align-items:center; gap:10px; }
+    .conclusion p { font-size:13px; color:rgba(255,255,255,0.75); line-height:1.75; margin-bottom:10px; }
+    .conclusion p:last-child { margin-bottom:0; }
+    .conclusion strong { color:white; }
+    .conclusion .accent { color:var(--accent); font-weight:700; }
+    .verdict-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:20px; }
+    .verdict-item { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:14px; text-align:center; }
+    .verdict-item .vi-icon { font-size:22px; margin-bottom:6px; }
+    .verdict-item .vi-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.5); margin-bottom:4px; }
+    .verdict-item .vi-val { font-size:14px; font-weight:700; color:white; }
+
+    /* Footer */
+    .footer { background:var(--navy); padding:18px 60px; display:flex; justify-content:space-between; align-items:center; }
+    .footer-left { font-size:11px; color:rgba(255,255,255,0.4); }
+    .footer-right { font-size:11px; color:rgba(255,255,255,0.35); text-align:right; }
+
+    /* ─── PRINT STYLES — Carta 216×279mm ─── */
+    @media print {
+      @page {
+        size: letter portrait;
+        margin: 14mm 16mm 14mm 16mm;
+      }
+
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+      body { background: white !important; font-size: 11px !important; }
+
+      /* Page wrapper — full width, no shadow */
+      .page { box-shadow: none !important; margin: 0 !important; max-width: 100% !important; width: 100% !important; }
+
+      /* Header compact on print */
+      .header { padding: 28px 36px 22px !important; }
+      .header h1 { font-size: 20px !important; }
+      .header-subtitle { font-size: 11px !important; }
+      .header-meta { margin-top: 16px !important; gap: 24px !important; }
+
+      /* Cover page: header fills full first page, vertically centered */
+      .cover-page {
+        min-height: 100vh !important;
+        display: flex !important;
+        flex-direction: column !important;
+        break-after: page !important;
+        page-break-after: always !important;
+      }
+      .cover-page .header {
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: flex-start !important;
+        padding: 60px 72px !important;
+      }
+      .cover-page .header h1  { font-size: 32px !important; margin-bottom: 18px !important; }
+      .cover-page .header-subtitle { font-size: 14px !important; }
+      .cover-page .header-meta { margin-top: 44px !important; gap: 48px !important; }
+      .cover-page .header-meta-item label { font-size: 10px !important; }
+      .cover-page .header-meta-item span  { font-size: 14px !important; }
+      .cover-page .accent-bar { height: 6px !important; }
+
+      /* Content tighter padding */
+      .content { padding: 22px 36px !important; }
+      .section { margin-bottom: 24px !important; }
+
+      /* Never cut these elements across pages */
+      .section,
+      .section-title,
+      .comparison-table,
+      .options-grid,
+      .option-card,
+      .option-body,
+      .exec-summary,
+      .insight,
+      .verdict-row,
+      .verdict-item,
+      .free-tier-grid,
+      .free-tier-item,
+      .conclusion,
+      tr,
+      td,
+      th { break-inside: avoid !important; page-break-inside: avoid !important; }
+
+      /* Force page break before major sections to avoid mid-section cuts */
+      .section { break-before: auto; }
+
+      /* Tables: allow wrapping, prevent overflow */
+      .comparison-table,
+      table { width: 100% !important; table-layout: fixed !important; word-break: break-word !important; overflow: hidden !important; }
+
+      table td, table th { padding: 7px 10px !important; font-size: 10.5px !important; word-break: break-word !important; overflow-wrap: break-word !important; }
+
+      /* Grids: stack to single column when too narrow, or reduce gap */
+      div[style*="grid-template-columns:1fr 1fr"] { gap: 10px !important; }
+      div[style*="grid-template-columns:1fr 1fr 1fr"] { gap: 8px !important; }
+
+      /* Prevent floated buttons and interactive elements from printing */
+      .print-btn-wrap { display: none !important; }
+      .footer { padding: 10px 36px !important; }
+
+      /* Avoid orphan headers */
+      .section-title { break-after: avoid !important; page-break-after: avoid !important; }
+
+      /* Conclusions and info cards */
+      .conclusion { padding: 18px 22px !important; border-radius: 8px !important; }
+      .verdict-row { gap: 8px !important; }
+
+      /* Font scale adjustments */
+      h1, h2, h3 { line-height: 1.3 !important; }
+      p, td, th, li, small { line-height: 1.5 !important; }
+
+      /* Remove background gradients that cause issues on some printers */
+      .accent-bar { height: 3px !important; }
+    }
+
+    /* Floating print button */
+    .print-btn-wrap {
+      position:fixed; bottom:28px; right:28px; z-index:9999;
+      display:flex; flex-direction:column; align-items:flex-end; gap:10px;
+    }
+    .print-tip {
+      background:var(--navy); color:white; border-radius:10px;
+      padding:14px 18px; font-size:12.5px; line-height:1.8;
+      box-shadow:0 8px 32px rgba(0,0,0,0.3); max-width:260px;
+      display:none;
+    }
+    .print-tip strong { color:var(--accent); }
+    .print-tip ol { padding-left:18px; margin-top:6px; }
+    .print-tip li { margin-bottom:3px; }
+    .print-btn-wrap:hover .print-tip { display:block; }
+    .print-btn {
+      background:linear-gradient(135deg,#059669,#10b981);
+      color:white; border:none; border-radius:50px;
+      padding:13px 24px; font-size:14px; font-weight:700;
+      cursor:pointer; box-shadow:0 6px 24px rgba(5,150,105,0.45);
+      display:flex; align-items:center; gap:9px;
+      transition:transform 0.15s, box-shadow 0.15s;
+      font-family:'Roboto',sans-serif;
+    }
+    .print-btn:hover { transform:translateY(-2px); box-shadow:0 10px 32px rgba(5,150,105,0.55); }
+    .print-btn:active { transform:translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- FLOATING PRINT BUTTON -->
+<div class="print-btn-wrap">
+  <div class="print-tip">
+    <strong>&#128161; ¿Cómo guardar como PDF?</strong>
+    <ol>
+      <li>Haz clic en el botón verde &#8595;</li>
+      <li>Se abrirá la ventana de impresión</li>
+      <li>En <strong>"Destino"</strong> elige<br><strong>"Guardar como PDF"</strong></li>
+      <li>Haz clic en <strong>"Guardar"</strong></li>
+    </ol>
+    <p style="margin-top:8px;font-size:11px;color:rgba(255,255,255,0.55);">Pasa el mouse por encima para ver estas instrucciones de nuevo.</p>
+  </div>
+  <button class="print-btn" onclick="window.print()">
+    &#128438; Guardar como PDF
+  </button>
+</div>
+<div class="page">
+
+  <div class="cover-page">
+    <div class="header">
+      <h1>Cotización — Aplicación de Censo Parroquial</h1>
+      <p class="header-subtitle">
+        Comparación de costos entre un <strong style="color:rgba(255,255,255,0.9);">servidor físico</strong>
+        y la <strong style="color:rgba(255,255,255,0.9);">nube de Google (Firebase)</strong>.
+        Precios en dólares americanos y quetzales guatemaltecos.
+      </p>
+      <div class="header-meta">
+        <div class="header-meta-item"><label>Fecha</label><span>Julio 2026</span></div>
+        <div class="header-meta-item"><label>Moneda</label><span>USD &mdash; Dólares americanos</span></div>
+        <div class="header-meta-item"><label>Versión</label><span>1.0</span></div>
+      </div>
+    </div>
+    <div class="accent-bar"></div>
+  </div>
+
+  <div class="content">
+
+    <!-- 00 CUADRO DE COMBINACIONES -->
+    <div class="section" style="background:linear-gradient(135deg,#f8faff,#eef2fb);border:2px solid #c7d8f5;border-radius:14px;margin-bottom:24px;">
+      <div class="section-title" style="color:var(--navy);">00 — Cuadro de Subtotales y Combinaciones Posibles</div>
+
+      <p style="font-size:12px;color:var(--grey-mid);margin-bottom:16px;line-height:1.6;">
+        Este documento tiene <strong>3 componentes de costo independientes</strong>. Cada uno tiene varias opciones.
+        A continuación se muestra de dónde viene cada subtotal y cómo combinarlos.
+      </p>
+
+      <!-- Component breakdown -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px;">
+
+        <!-- Component 1: Programming -->
+        <div style="background:white;border:1px solid #dce3ec;border-radius:10px;overflow:hidden;">
+          <div style="background:var(--navy);padding:10px 14px;">
+            <p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);">Componente 1</p>
+            <p style="font-size:13px;font-weight:700;color:white;margin-top:2px;">💻 Programación</p>
+            <p style="font-size:10px;color:rgba(255,255,255,0.55);">Pago único · no se repite</p>
+          </div>
+          <div style="padding:12px 14px;">
+            <div style="border-bottom:1px solid #f0f4f8;padding:7px 0;display:flex;justify-content:space-between;align-items:center;">
+              <div><span style="font-size:11px;color:var(--grey-dark);">Con descuento iglesia 25%</span><br><span style="font-size:10px;color:#059669;font-weight:700;">✅ Recomendado</span></div>
+              <div style="text-align:right;"><strong style="color:var(--navy);">$1,218</strong><br><small style="color:#9ca3af;">≈ Q9,440</small></div>
+            </div>
+            <div style="padding:7px 0;display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:11px;color:var(--grey-dark);">Sin descuento (precio mercado)</span>
+              <div style="text-align:right;"><strong style="color:var(--grey-mid);">$1,624</strong><br><small style="color:#9ca3af;">≈ Q12,586</small></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Component 2: Infrastructure -->
+        <div style="background:white;border:1px solid #dce3ec;border-radius:10px;overflow:hidden;">
+          <div style="background:var(--navy);padding:10px 14px;">
+            <p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);">Componente 2</p>
+            <p style="font-size:13px;font-weight:700;color:white;margin-top:2px;">🖥️ Infraestructura</p>
+            <p style="font-size:10px;color:rgba(255,255,255,0.55);">Inicial + mensual continuo</p>
+          </div>
+          <div style="padding:12px 14px;">
+            <div style="border-bottom:1px solid #f0f4f8;padding:7px 0;">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <div><span style="font-size:11px;color:var(--grey-dark);">☁️ Firebase / Nube</span><br><span style="font-size:10px;color:#059669;font-weight:700;">✅ Recomendado</span></div>
+                <div style="text-align:right;"><strong style="color:#059669;">$74.99</strong> inicio<br><strong style="color:#059669;">+$3</strong>/mes<br><small style="color:#9ca3af;">≈ Q581 + Q23/mes</small></div>
+              </div>
+            </div>
+            <div style="padding:7px 0;">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <div><span style="font-size:11px;color:var(--grey-dark);">🖥️ Servidor físico (Izabal)</span></div>
+                <div style="text-align:right;"><strong style="color:#dc2626;">$5,000</strong> inicio<br><strong style="color:#dc2626;">+$460</strong>/mes<br><small style="color:#9ca3af;">≈ Q38,750 + Q3,565/mes</small></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Component 3: Domain -->
+        <div style="background:white;border:1px solid #dce3ec;border-radius:10px;overflow:hidden;">
+          <div style="background:var(--navy);padding:10px 14px;">
+            <p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);">Componente 3</p>
+            <p style="font-size:13px;font-weight:700;color:white;margin-top:2px;">🌐 Dominio / URL</p>
+            <p style="font-size:10px;color:rgba(255,255,255,0.55);">Pago anual o cero adicional</p>
+          </div>
+          <div style="padding:12px 14px;">
+            <div style="border-bottom:1px solid #f0f4f8;padding:7px 0;display:flex;justify-content:space-between;">
+              <div><span style="font-size:11px;color:var(--grey-dark);">cen.crgm.app (ya tienes el dominio)</span><br><span style="font-size:10px;color:#059669;font-weight:700;">✅ Recomendado</span></div>
+              <div style="text-align:right;"><strong style="color:#059669;">$0</strong><br><small style="color:#9ca3af;">Q0 adicional</small></div>
+            </div>
+            <div style="border-bottom:1px solid #f0f4f8;padding:7px 0;display:flex;justify-content:space-between;">
+              <span style="font-size:11px;color:var(--grey-dark);">Dominio .com / año</span>
+              <div style="text-align:right;"><strong style="color:var(--grey-mid);">$12–$15</strong><br><small style="color:#9ca3af;">≈ Q93–Q116/año</small></div>
+            </div>
+            <div style="padding:7px 0;display:flex;justify-content:space-between;">
+              <span style="font-size:11px;color:var(--grey-dark);">Dominio .gt / año</span>
+              <div style="text-align:right;"><strong style="color:#dc2626;">$40–$80</strong><br><small style="color:#9ca3af;">≈ Q310–Q620/año</small></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Combinations matrix -->
+      <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--navy);margin-bottom:10px;">🔢 Todas las combinaciones posibles — costo total primer año</p>
+
+      <table class="comparison-table" style="font-size:11.5px;">
+        <thead>
+          <tr>
+            <th style="width:6%;text-align:center;">#</th>
+            <th style="width:18%;">Programación</th>
+            <th style="width:20%;">Infraestructura</th>
+            <th style="width:16%;">Dominio</th>
+            <th style="width:20%;">Subtotal inicial</th>
+            <th style="width:20%;">Total año 1</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- A: Recommended -->
+          <tr style="background:linear-gradient(90deg,#f0fdf4,#fafffe);border-left:4px solid #059669;">
+            <td style="text-align:center;font-weight:900;color:#059669;">A</td>
+            <td><strong style="color:#065f46;">$1,218</strong><br><small style="color:#9ca3af;">Con descuento iglesia</small></td>
+            <td><strong style="color:#059669;">Firebase $74.99</strong><br><small style="color:#9ca3af;">+ $3/mes</small></td>
+            <td><strong style="color:#059669;">$0</strong><br><small style="color:#9ca3af;">cen.crgm.app</small></td>
+            <td>
+              <strong style="color:#065f46;font-size:13px;">$1,292.99</strong><br>
+              <small style="color:#34d399;">≈ Q10,021</small>
+            </td>
+            <td style="background:#f0fdf4;">
+              <strong style="color:#059669;font-size:14px;">$1,328.99</strong><br>
+              <small style="color:#34d399;">≈ Q10,300</small><br>
+              <small style="color:#9ca3af;font-size:9px;">+$36 Firebase anual</small>
+              <div style="font-size:9px;background:#059669;color:white;border-radius:4px;padding:2px 6px;display:inline-block;margin-top:3px;">✅ MEJOR OPCIÓN</div>
+            </td>
+          </tr>
+          <!-- B -->
+          <tr>
+            <td style="text-align:center;font-weight:900;color:#1e5bb0;">B</td>
+            <td><strong style="color:var(--navy);">$1,218</strong><br><small style="color:#9ca3af;">Con descuento iglesia</small></td>
+            <td><strong style="color:#059669;">Firebase $74.99</strong><br><small style="color:#9ca3af;">+ $3/mes</small></td>
+            <td><strong style="color:var(--grey-mid);">$13</strong><br><small style="color:#9ca3af;">.com · primer año</small></td>
+            <td>
+              <strong style="color:var(--navy);font-size:13px;">$1,305.99</strong><br>
+              <small style="color:#9ca3af;">≈ Q10,122</small>
+            </td>
+            <td>
+              <strong style="color:var(--navy);font-size:13px;">$1,354.99</strong><br>
+              <small style="color:#9ca3af;">≈ Q10,501</small>
+            </td>
+          </tr>
+          <!-- C -->
+          <tr style="background:#f9fafb;">
+            <td style="text-align:center;font-weight:900;color:#1e5bb0;">C</td>
+            <td><strong style="color:var(--navy);">$1,624</strong><br><small style="color:#9ca3af;">Sin descuento</small></td>
+            <td><strong style="color:#059669;">Firebase $74.99</strong><br><small style="color:#9ca3af;">+ $3/mes</small></td>
+            <td><strong style="color:#059669;">$0</strong><br><small style="color:#9ca3af;">cen.crgm.app</small></td>
+            <td>
+              <strong style="color:var(--navy);font-size:13px;">$1,698.99</strong><br>
+              <small style="color:#9ca3af;">≈ Q13,167</small>
+            </td>
+            <td>
+              <strong style="color:var(--navy);font-size:13px;">$1,734.99</strong><br>
+              <small style="color:#9ca3af;">≈ Q13,446</small>
+            </td>
+          </tr>
+          <!-- D -->
+          <tr>
+            <td style="text-align:center;font-weight:900;color:#1e5bb0;">D</td>
+            <td><strong style="color:var(--navy);">$1,624</strong><br><small style="color:#9ca3af;">Sin descuento</small></td>
+            <td><strong style="color:#059669;">Firebase $74.99</strong><br><small style="color:#9ca3af;">+ $3/mes</small></td>
+            <td><strong style="color:var(--grey-mid);">$13</strong><br><small style="color:#9ca3af;">.com · primer año</small></td>
+            <td>
+              <strong style="color:var(--navy);font-size:13px;">$1,711.99</strong><br>
+              <small style="color:#9ca3af;">≈ Q13,268</small>
+            </td>
+            <td>
+              <strong style="color:var(--navy);font-size:13px;">$1,747.99</strong><br>
+              <small style="color:#9ca3af;">≈ Q13,547</small>
+            </td>
+          </tr>
+          <!-- E -->
+          <tr style="background:#fef2f2;">
+            <td style="text-align:center;font-weight:900;color:#dc2626;">E</td>
+            <td><strong style="color:var(--navy);">$1,218</strong><br><small style="color:#9ca3af;">Con descuento</small></td>
+            <td><strong style="color:#dc2626;">Servidor Físico $5,000</strong><br><small style="color:#9ca3af;">+ $460/mes</small></td>
+            <td><strong style="color:#059669;">$0</strong><br><small style="color:#9ca3af;">cen.crgm.app</small></td>
+            <td>
+              <strong style="color:#dc2626;font-size:13px;">$6,218</strong><br>
+              <small style="color:#f87171;">≈ Q48,190</small>
+            </td>
+            <td>
+              <strong style="color:#dc2626;font-size:13px;">$11,738</strong><br>
+              <small style="color:#f87171;">≈ Q90,970</small><br>
+              <small style="color:#9ca3af;font-size:9px;">+$5,520 servidor anual</small>
+            </td>
+          </tr>
+          <!-- F -->
+          <tr style="background:#fef2f2;">
+            <td style="text-align:center;font-weight:900;color:#dc2626;">F</td>
+            <td><strong style="color:var(--navy);">$1,624</strong><br><small style="color:#9ca3af;">Sin descuento</small></td>
+            <td><strong style="color:#dc2626;">Servidor Físico $5,000</strong><br><small style="color:#9ca3af;">+ $460/mes</small></td>
+            <td><strong style="color:var(--grey-mid);">$13</strong><br><small style="color:#9ca3af;">.com · primer año</small></td>
+            <td>
+              <strong style="color:#dc2626;font-size:13px;">$6,637</strong><br>
+              <small style="color:#f87171;">≈ Q51,437</small>
+            </td>
+            <td>
+              <strong style="color:#dc2626;font-size:13px;">$12,170</strong><br>
+              <small style="color:#f87171;">≈ Q94,318</small>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Legend -->
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;font-size:11px;color:var(--grey-mid);">
+        <div style="display:flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;background:#059669;border-radius:3px;display:inline-block;"></span>Combinación recomendada</div>
+        <div style="display:flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;background:#fef2f2;border:1px solid #fecaca;border-radius:3px;display:inline-block;"></span>Con servidor físico (costo alto)</div>
+        <div style="display:flex;align-items:center;gap:6px;"><strong>Tasa de cambio:</strong> Q7.75 por USD</div>
+        <div style="display:flex;align-items:center;gap:6px;"><strong>Año 1:</strong> Inicio + 12 meses operación</div>
+      </div>
+    </div>
+
+    <!-- 01 Resumen Ejecutivo -->
+    <div class="section">
+      <div class="section-title">01 - Resumen Ejecutivo</div>
+      <div class="exec-summary">
+        <p>
+          Un proceso de <strong>censo parroquial o civil</strong> presenta un patron de uso altamente
+          irregular: durante el <span class="highlight">periodo activo (semanas o meses)</span>, el sistema
+          experimenta <strong>picos masivos de trafico simultaneo</strong> - multiples censadores enviando datos
+          en campo, coordinadores consultando reportes en tiempo real y administradores validando registros.
+          Una vez finalizado el proceso, <strong>el uso cae practicamente a cero</strong> durante el resto del año.
+        </p>
+        <p style="margin-top:12px;">
+          Este patron hace que un <strong>servidor fisico fijo</strong> sea una inversion con
+          <em>altisimo desperdicio de capacidad</em>: se paga el 100% del costo durante los 11 meses
+          en que apenas se usa. La <span class="highlight">nube (modelo serverless)</span>, en cambio,
+          <strong>escala automaticamente con la demanda y cobra solo por lo consumido</strong>,
+          resultando en un ahorro superior al 90% en el costo anual total.
+        </p>
+      </div>
+      <div class="insight">
+        <div class="insight-icon">&#128161;</div>
+        <div class="insight-text">
+          <strong>Principio clave:</strong> No se paga por capacidad reservada, sino por uso real.
+          Durante los meses sin actividad de censo, el costo de la plataforma Firebase es literalmente
+          <strong>$0 USD</strong>, gracias a la capa gratuita incluida en el plan Blaze.
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 Costo Inicial de Desarrollo -->
+    <div class="section">
+      <div class="section-title">02 - Costo Inicial de Desarrollo y Puesta en Marcha</div>
+
+      <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:14px 18px;margin-bottom:18px;display:flex;gap:12px;align-items:flex-start;">
+        <div style="font-size:20px;flex-shrink:0;">&#128073;</div>
+        <div style="font-size:12px;color:#9a3412;line-height:1.75;">
+          <strong style="color:#7c2d12;">Pago único — no se repite cada mes.</strong>
+          Las horas son el <strong>total real acumulado del ciclo completo del proyecto</strong> — diseño, programación, correcciones, garantía, capacitación y soporte.
+          Tarifa aplicada: <strong>Q120/hora = $15.48/hora</strong>, que es la tarifa de mercado real
+          de un desarrollador de nivel medio en Guatemala (rango: Q80–Q180/hr según experiencia).
+          <br><strong>Precios en USD y Quetzales (Q7.75/USD).</strong>
+        </div>
+      </div>
+
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th style="width:25%;">Componente</th>
+            <th>Qué cubre</th>
+            <th style="text-align:center;width:85px;">Horas</th>
+            <th style="text-align:right;width:155px;">Q120/hr · USD/GTQ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Diseño y estructura</td>
+            <td>Planificación, flujos de pantallas, diseño de base de datos</td>
+            <td style="text-align:center;color:var(--grey-mid);">12 hrs</td>
+            <td style="text-align:right;font-weight:700;color:var(--navy);">$186<br><small style="color:#9ca3af;">Q1,440</small></td>
+          </tr>
+          <tr>
+            <td>Programación de pantallas</td>
+            <td>Formularios, búsqueda, reportes, mapa, usuarios, panel admin, iteraciones</td>
+            <td style="text-align:center;color:var(--grey-mid);">48 hrs</td>
+            <td style="text-align:right;font-weight:700;color:var(--navy);">$743<br><small style="color:#9ca3af;">Q5,760</small></td>
+          </tr>
+          <tr>
+            <td>Base de datos (Firebase)</td>
+            <td>Configuración, seguridad, sincronización offline, correcciones de reglas</td>
+            <td style="text-align:center;color:var(--grey-mid);">20 hrs</td>
+            <td style="text-align:right;font-weight:700;color:var(--navy);">$310<br><small style="color:#9ca3af;">Q2,400</small></td>
+          </tr>
+          <tr>
+            <td>Pruebas y garantía</td>
+            <td>Testing en celular y PC, corrección de bugs durante desarrollo <em>y</em> garantía 3 meses post-entrega</td>
+            <td style="text-align:center;color:var(--grey-mid);">18 hrs</td>
+            <td style="text-align:right;font-weight:700;color:var(--navy);">$279<br><small style="color:#9ca3af;">Q2,160</small></td>
+          </tr>
+          <tr>
+            <td>Soporte y capacitación</td>
+            <td>Acompañamiento post-lanzamiento, manual de usuario, sesión de capacitación</td>
+            <td style="text-align:center;color:var(--grey-mid);">10 hrs</td>
+            <td style="text-align:right;font-weight:700;color:var(--navy);">$155<br><small style="color:#9ca3af;">Q1,200</small></td>
+          </tr>
+          <tr>
+            <td>Reuniones y publicación</td>
+            <td>Llamadas de avance, despliegue Firebase Hosting, configuración del dominio</td>
+            <td style="text-align:center;color:var(--grey-mid);">7 hrs</td>
+            <td style="text-align:right;font-weight:700;color:var(--navy);">$108<br><small style="color:#9ca3af;">Q840</small></td>
+          </tr>
+          <tr style="background:#f0f4f8;">
+            <td colspan="2" style="color:var(--grey-mid);font-size:11.5px;font-style:italic;">&#128187; Gastos fijos del desarrollador<br><small>Herramientas ($40), comunicación/datos ($35), movilización ($41)</small></td>
+            <td style="text-align:center;color:var(--grey-mid);font-size:11px;">—</td>
+            <td style="text-align:right;font-weight:700;color:var(--grey-dark);">$150<br><small style="color:#9ca3af;">Q1,163</small></td>
+          </tr>
+
+          <!-- Subtotal -->
+          <tr style="background:#f4f6f9;">
+            <td colspan="2" style="text-align:right;font-weight:700;color:var(--grey-mid);font-size:11.5px;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid var(--border);"
+            >Subtotal — 115 hrs · Q120/hr · Q7.75/USD</td>
+            <td style="text-align:center;font-weight:900;color:var(--grey-dark);border-bottom:1px solid var(--border);font-size:13px;">115 hrs</td>
+            <td style="text-align:right;font-weight:900;font-size:15px;color:var(--grey-dark);border-bottom:1px solid var(--border);">$1,935<br><small style="color:#9ca3af;">Q15,000</small></td>
+          </tr>
+
+          <!-- Discount row -->
+          <tr style="background:#fefce8;">
+            <td colspan="3" style="border-bottom:1px dashed #fde68a;">
+              <div style="display:flex;align-items:flex-start;gap:8px;">
+                <span style="font-size:16px;">&#9995;</span>
+                <div>
+                  <strong style="color:#92400e;font-size:12.5px;">Descuento por colaboración con la Iglesia — 40%</strong>
+                  <div style="font-size:11px;color:#a16207;margin-top:3px;line-height:1.6;">
+                    El desarrollador colabora activamente con la iglesia y aporta el 40% del costo como contribución al servicio pastoral de la parroquia en Izabal.
+                    <strong style="color:#92400e;">Ambas partes ganan:</strong> la iglesia recibe tecnología a precio accesible;
+                    el desarrollador cubre sus gastos reales y contribuye a la comunidad. La tarifa final de
+                    <strong style="color:#7c2d12;">$10.18/hr</strong> sigue siendo justa y real para el mercado local.
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td style="text-align:right;font-weight:900;font-size:16px;color:#dc2626;border-bottom:1px dashed #fde68a;">
+              −$774<br><small style="color:#f59e0b;">−Q6,000</small>
+            </td>
+          </tr>
+
+          <!-- Total with discount -->
+          <tr style="background:var(--navy);">
+            <td colspan="2" style="color:rgba(255,255,255,0.7);font-size:12px;border:none;padding:14px 20px;">
+              <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);display:block;margin-bottom:3px;">Total a pagar</span>
+              115 horas · Q120/hr · 40% descuento iglesia · pago único · 3 meses garantía incluida
+            </td>
+            <td style="border:none;text-align:center;padding:14px 10px;">
+              <div style="font-size:18px;font-weight:900;color:white;">115 hrs</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.4);">ciclo completo</div>
+            </td>
+            <td style="text-align:right;border:none;padding:14px 20px;">
+              <div style="font-size:26px;font-weight:900;color:white;">$1,161</div>
+              <div style="font-size:13px;font-weight:700;color:var(--accent);">≈ Q9,000</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.45);margin-top:2px;">USD / GTQ · pago único</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Info cards -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:18px;">
+        <div style="background:var(--grey-bg);border:1px solid var(--border);border-radius:10px;padding:15px 18px;">
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--grey-mid);margin-bottom:6px;">&#128200; Si se paga en cuotas</p>
+          <p style="font-size:12.5px;color:var(--grey-dark);line-height:1.65;">
+            3 cuotas de <strong>$387 USD ≈ Q3,000</strong>:<br>
+            al inicio, al finalizar la programación, y al cierre de la garantía.
+          </p>
+        </div>
+        <div style="background:#fef9c3;border:1px solid #fde68a;border-radius:10px;padding:15px 18px;">
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#92400e;margin-bottom:6px;">&#128179; Tarifa de referencia</p>
+          <p style="font-size:12.5px;color:#78350f;line-height:1.65;">
+            Un desarrollador en Guatemala cobra <strong>Q80–Q180/hr</strong> ($10–$23/hr).
+            Este proyecto usa <strong>Q120/hr</strong> ($15.48/hr) — nivel medio.
+          </p>
+        </div>
+        <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:15px 18px;">
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#065f46;margin-bottom:6px;">&#9989; Qué incluye este precio</p>
+          <p style="font-size:12.5px;color:#064e3b;line-height:1.65;">
+            App completa, publicada, capacitación, manual y <strong>3 meses de garantía</strong> sin costo adicional.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALT: Alternativas gratuitas vs esta app -->
+    <div class="section">
+      <div class="section-title">03 — ¿Por Qué No Usar Google Forms, Excel o Papel?</div>
+
+      <p style="font-size:12.5px;color:var(--grey-mid);margin-bottom:16px;line-height:1.7;">
+        Antes de invertir en una app personalizada, es válido preguntarse: <strong style="color:var(--navy);">¿no podría usarse Google Forms, una hoja de Excel o simplemente papel?</strong>
+        A continuación se comparan todas las opciones de forma objetiva.
+      </p>
+
+      <!-- Comparison table -->
+      <table class="comparison-table" style="font-size:11.5px;">
+        <thead>
+          <tr>
+            <th style="width:20%;">Herramienta</th>
+            <th style="width:16%;text-align:center;color:#86efac;">✅ Ventajas</th>
+            <th style="width:16%;text-align:center;color:#fca5a5;">❌ Desventajas</th>
+            <th style="width:16%;text-align:center;">Sin internet</th>
+            <th style="width:16%;text-align:center;">Costo</th>
+            <th style="width:16%;text-align:center;">Ideal para</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>📄 Papel / Planilla impresa</strong></td>
+            <td style="color:#059669;">Sin tecnología, cualquiera lo usa, cero costo</td>
+            <td style="color:#dc2626;">Pérdida fácil, difícil de tabular, no buscable, no permite reportes, ilegible</td>
+            <td style="text-align:center;font-weight:700;color:#059669;">✅ Total</td>
+            <td style="text-align:center;font-weight:700;color:#059669;">$0</td>
+            <td style="font-size:11px;color:#6b7280;">Registro puntual de 5–10 personas</td>
+          </tr>
+          <tr>
+            <td><strong>📊 Excel / Google Sheets</strong></td>
+            <td style="color:#059669;">Flexible, con fórmulas, familiar, exportable</td>
+            <td style="color:#dc2626;">Sin control de usuarios, sin fotos, sin mapa, errores de versiones, no funciona bien en celular, datos duplicados</td>
+            <td style="text-align:center;font-weight:700;color:#f59e0b;">⚠️ Solo Excel<br><small style="color:#9ca3af;">Sheets requiere WiFi</small></td>
+            <td style="text-align:center;font-weight:700;color:#059669;">$0–$10/mes</td>
+            <td style="font-size:11px;color:#6b7280;">Listas pequeñas sin múltiples usuarios simultáneos</td>
+          </tr>
+          <tr>
+            <td><strong>📋 Google Forms</strong></td>
+            <td style="color:#059669;">Fácil de crear, respuestas en hoja, gratis, acceso desde celular</td>
+            <td style="color:#dc2626;">Requiere internet siempre, no permite editar registros, sin fotos adjuntas, sin mapa, sin reportes automáticos, sin control de roles</td>
+            <td style="text-align:center;font-weight:700;color:#dc2626;">❌ Requiere internet</td>
+            <td style="text-align:center;font-weight:700;color:#059669;">$0</td>
+            <td style="font-size:11px;color:#6b7280;">Encuestas simples de una sola vez</td>
+          </tr>
+          <tr>
+            <td><strong>📝 Microsoft Forms / Office 365</strong></td>
+            <td style="color:#059669;">Integración con Teams/SharePoint, exporta a Excel automáticamente</td>
+            <td style="color:#dc2626;">Requiere licencia ($6–$22/usuario/mes), requiere internet, sin mapa, sin fotos, sin búsqueda avanzada</td>
+            <td style="text-align:center;font-weight:700;color:#dc2626;">❌ Requiere internet</td>
+            <td style="text-align:center;font-weight:700;color:#f59e0b;">$6–$22/usuario/mes</td>
+            <td style="font-size:11px;color:#6b7280;">Empresas con licencia Microsoft activa</td>
+          </tr>
+          <tr>
+            <td><strong>💬 WhatsApp / Formulario por chat</strong></td>
+            <td style="color:#059669;">Todo el mundo lo usa, envío de fotos sencillo</td>
+            <td style="color:#dc2626;">No hay base de datos, nada es buscable, imposible generar reportes, caos con muchos censadores, privacidad cuestionable</td>
+            <td style="text-align:center;font-weight:700;color:#dc2626;">❌ Requiere internet</td>
+            <td style="text-align:center;font-weight:700;color:#059669;">$0</td>
+            <td style="font-size:11px;color:#6b7280;">Comunicación casual, no censo formal</td>
+          </tr>
+          <tr style="background:linear-gradient(90deg,#f0fdf4,#fafffe);border-left:4px solid #059669;">
+            <td><strong style="color:#065f46;">📱 Esta App (Censo Iglesia)</strong></td>
+            <td style="color:#059669;font-weight:600;">Funciona sin internet, fotos, mapa georreferenciado, múltiples censadores simultáneos, reportes automáticos, búsqueda, roles de usuario, exporta PDF/Excel, datos seguros en la nube</td>
+            <td style="color:#dc2626;">Requiere inversión inicial · Necesita capacitación básica</td>
+            <td style="text-align:center;">
+              <div style="font-size:14px;font-weight:900;color:#059669;">✅ 100%</div>
+              <div style="font-size:10px;font-weight:700;color:#059669;">Sin internet</div>
+              <div style="font-size:10px;color:#9ca3af;">Sincroniza automático al reconectar</div>
+            </td>
+            <td style="text-align:center;font-weight:700;color:#059669;">$74.99 infra<br><small style="color:#9ca3af;">~$3/mes operación</small></td>
+            <td style="font-size:11px;color:#065f46;font-weight:600;">Censas de 50 a 5,000+ personas con múltiples censadores en zonas sin señal</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Offline highlight box -->
+      <div style="background:linear-gradient(135deg,#0d2240,#1a3a6b);border-radius:12px;padding:20px 24px;margin-top:18px;display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start;">
+        <div style="font-size:48px;line-height:1;">📶</div>
+        <div>
+          <p style="font-size:13px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">Ventaja clave: Funciona 100% sin internet</p>
+          <p style="font-size:12.5px;color:rgba(255,255,255,0.8);line-height:1.75;margin-bottom:10px;">
+            En zonas rurales de Izabal, Petén, Huehuetenango o cualquier área con señal débil o sin WiFi,
+            <strong style="color:white;">esta app sigue funcionando</strong> exactamente igual. Los censadores
+            pueden registrar familias, tomar fotos y geolocalizar sin necesidad de conexión.
+          </p>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+            <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:12px;text-align:center;">
+              <div style="font-size:20px;margin-bottom:4px;">📥</div>
+              <div style="font-size:11px;font-weight:700;color:#f59e0b;margin-bottom:3px;">SIN INTERNET</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.7);">Registra datos, fotos, ubicación GPS sin ninguna conexión activa</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:12px;text-align:center;">
+              <div style="font-size:20px;margin-bottom:4px;">🔄</div>
+              <div style="font-size:11px;font-weight:700;color:#f59e0b;margin-bottom:3px;">SINCRONIZA SOLO</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.7);">Al volver a zona con señal, sube todos los datos automáticamente</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:12px;text-align:center;">
+              <div style="font-size:20px;margin-bottom:4px;">👥</div>
+              <div style="font-size:11px;font-weight:700;color:#f59e0b;margin-bottom:3px;">VARIOS A LA VEZ</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.7);">10, 20 censadores trabajando en paralelo, cada uno desde su celular</div>
+            </div>
+          </div>
+          <p style="font-size:11.5px;color:rgba(255,255,255,0.55);margin-top:12px;font-style:italic;">
+            ⚠️ Ninguna de las alternativas gratuitas (Google Forms, Excel en línea, Microsoft Forms) ofrece esta capacidad offline con sincronización automática.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 Tabla Comparativa -->
+    <div class="section">
+      <div class="section-title">03 - Tabla Comparativa Global de Infraestructura</div>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Criterio</th>
+            <th>Servidor Fisico On-Premise</th>
+            <th class="col-recommended">Nube - Google / Firebase (Recomendada)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CAPEX Inicial</td>
+            <td class="bad">Alto - hardware, UPS, refrigeracion, rack, cableado</td>
+            <td class="good">Casi nulo - sin inversion inicial en equipos</td>
+          </tr>
+          <tr>
+            <td>OPEX Mensual</td>
+            <td class="bad">Fijo e ineludible - electricidad 24/7, IP fija, mantenimiento</td>
+            <td class="good">Variable - se paga solo por uso real consumido</td>
+          </tr>
+          <tr>
+            <td>Mantenimiento</td>
+            <td class="bad">Alto - parches de SO, hardware, sala de servidores, soporte</td>
+            <td class="good">Bajo - gestionado completamente por Google</td>
+          </tr>
+          <tr>
+            <td>Escalabilidad</td>
+            <td class="bad">Rigida - limitada al hardware adquirido</td>
+            <td class="good">Infinita - escala automaticamente en segundos</td>
+          </tr>
+          <tr>
+            <td>Disponibilidad</td>
+            <td class="bad">Depende del equipo local, energia y conexion</td>
+            <td class="good">SLA del 99.95% garantizado por Google Cloud</td>
+          </tr>
+          <tr>
+            <td>Seguridad</td>
+            <td class="bad">Responsabilidad total del equipo interno</td>
+            <td class="good">ISO 27001, SOC 2, GDPR - gestionadas por Google</td>
+          </tr>
+          <tr>
+            <td>Respaldo / DR</td>
+            <td class="bad">Debe disenarse y mantenerse manualmente</td>
+            <td class="good">Backups automaticos, replicacion multi-region</td>
+          </tr>
+          <tr>
+            <td>Costo sin uso</td>
+            <td class="bad">100% del costo fijo mensual sin descuentos</td>
+            <td class="good"><strong>$0 USD</strong> - capa gratuita cubre el uso minimo</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 03 Detalle de Costes -->
+    <div class="section">
+      <div class="section-title">04 - Detalle de Costes Minimos Mensuales</div>
+      <div class="options-grid">
+
+        <!-- Opcion A -->
+        <div class="option-card">
+          <div class="option-card-header">
+            <div class="option-tag iaas">IaaS - Infraestructura como Servicio</div>
+            <h3>Opcion A: Maquina Virtual</h3>
+            <p>Google Compute Engine (GCE) vs Servidor Fisico</p>
+          </div>
+          <div class="option-body">
+
+            <!-- Spec comparison mini-table -->
+            <p style="font-size:11.5px;font-weight:700;color:var(--navy);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;">Comparativa de Especificaciones Tecnicas</p>
+            <table style="width:100%;border-collapse:collapse;font-size:11.5px;margin-bottom:14px;">
+              <thead>
+                <tr style="background:var(--grey-bg);">
+                  <th style="padding:7px 10px;text-align:left;font-weight:700;color:var(--grey-mid);font-size:10px;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid var(--border);">Recurso</th>
+                  <th style="padding:7px 10px;text-align:center;font-weight:700;color:#3730a3;font-size:10px;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid var(--border);">VM e2-medium</th>
+                  <th style="padding:7px 10px;text-align:center;font-weight:700;color:var(--red);font-size:10px;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid var(--border);">Servidor Fisico</th>
+                </tr>
+              </thead>
+              <tbody>
+                 <tr style="border-bottom:1px solid var(--border);">
+                   <td style="padding:6px 10px;color:var(--grey-mid);">Procesador</td>
+                   <td style="padding:6px 10px;text-align:center;font-weight:600;color:#3730a3;">2 vCPU Intel/AMD compartidos</td>
+                   <td style="padding:6px 10px;text-align:center;font-weight:600;color:var(--red);">Intel Xeon E-2400 / Core i9-13900<br><small style="font-weight:400;color:#9ca3af;">16 núcleos físicos — procesamiento dedicado</small></td>
+                 </tr>
+                 <tr style="background:var(--grey-bg);border-bottom:1px solid var(--border);">
+                   <td style="padding:6px 10px;color:var(--grey-mid);">Memoria RAM</td>
+                   <td style="padding:6px 10px;text-align:center;font-weight:600;color:#3730a3;">4 GB DDR4</td>
+                   <td style="padding:6px 10px;text-align:center;font-weight:600;color:var(--red);">64 GB DDR5 ECC<br><small style="font-weight:400;color:#9ca3af;">Corrección de errores — estabilidad 24/7</small></td>
+                 </tr>
+                 <tr style="border-bottom:1px solid var(--border);">
+                   <td style="padding:6px 10px;color:var(--grey-mid);">Almacenamiento</td>
+                   <td style="padding:6px 10px;text-align:center;font-weight:600;color:#3730a3;">50 GB SSD persistente</td>
+                   <td style="padding:6px 10px;text-align:center;font-weight:600;color:var(--red);">2 × 2 TB NVMe SSD (RAID 1)<br><small style="font-weight:400;color:#9ca3af;">Alta velocidad + redundancia de datos</small></td>
+                 </tr>
+                 <tr style="background:var(--grey-bg);border-bottom:1px solid var(--border);">
+                   <td style="padding:6px 10px;color:var(--grey-mid);">Sistema Operativo</td>
+                   <td style="padding:6px 10px;text-align:center;font-weight:600;color:#3730a3;">Ubuntu Server 22.04 LTS</td>
+                   <td style="padding:6px 10px;text-align:center;font-weight:600;color:var(--red);">Windows Server 2022 / Ubuntu<br><small style="font-weight:400;color:#9ca3af;">Licencia adicional si es Windows (~$400-900)</small></td>
+                 </tr>
+                 <tr style="border-bottom:1px solid var(--border);">
+                   <td style="padding:6px 10px;color:var(--grey-mid);">Red / Conectividad</td>
+                   <td style="padding:6px 10px;text-align:center;font-weight:600;color:#3730a3;">1 Gbps red Google (99.9% uptime)</td>
+                   <td style="padding:6px 10px;text-align:center;font-weight:600;color:var(--red);">Fibra dedicada 1 Gbps (ISP empresarial)<br><small style="font-weight:400;color:#9ca3af;">~$80-150 USD/mes adicional</small></td>
+                 </tr>
+                 <tr style="background:var(--grey-bg);border-bottom:1px solid var(--border);">
+                   <td style="padding:6px 10px;color:var(--grey-mid);">IP Pública fija</td>
+                   <td style="padding:6px 10px;text-align:center;font-weight:600;color:#3730a3;">Incluida (IP externa estática)</td>
+                   <td style="padding:6px 10px;text-align:center;font-weight:600;color:var(--red);">Plan IP fija empresarial del ISP<br><small style="font-weight:400;color:#9ca3af;">Incluida en el plan de fibra dedicada</small></td>
+                 </tr>
+                 <tr style="border-bottom:1px solid var(--border);">
+                   <td style="padding:6px 10px;color:var(--grey-mid);">Respaldo / Backup</td>
+                   <td style="padding:6px 10px;text-align:center;font-weight:600;color:#3730a3;">Snapshots automáticos (GCP)</td>
+                   <td style="padding:6px 10px;text-align:center;font-weight:600;color:var(--red);">NAS adicional + software de backup<br><small style="font-weight:400;color:#9ca3af;">Costo extra: ~$300-600 USD en hardware</small></td>
+                 </tr>
+                 <tr style="border-bottom:1px solid var(--border);">
+                   <td style="padding:6px 10px;color:var(--grey-mid);">UPS / Estabilizador</td>
+                   <td style="padding:6px 10px;text-align:center;font-weight:600;color:#3730a3;">No aplica (data center Google)</td>
+                   <td style="padding:6px 10px;text-align:center;font-weight:600;color:var(--red);">UPS APC 1500VA requerido<br><small style="font-weight:400;color:#9ca3af;">Costo: ~$200-400 USD adicional</small></td>
+                 </tr>
+                 <tr style="background:var(--grey-bg);border-bottom:2px solid var(--navy);">
+                   <td style="padding:6px 10px;color:var(--grey-mid);">Costo adquisición</td>
+                    <td style="padding:6px 10px;text-align:center;font-weight:700;color:var(--green);">$74.99<br><small style="font-weight:400;color:#6b7280;">Activación única · incluye Firebase completo</small></td>
+                   <td style="padding:6px 10px;text-align:center;font-weight:700;color:var(--red);">$3,500 – $6,500 USD<br><small style="font-weight:400;color:#9ca3af;">Equipo + UPS + NAS + instalación</small></td>
+                 </tr>
+              </tbody>
+            </table>
+
+             <!-- Monthly physical server cost note -->
+             <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:11px 14px;margin-bottom:14px;">
+               <p style="font-size:11.5px;font-weight:700;color:var(--red);margin-bottom:4px;">⚡ Costos operativos fijos adicionales del Servidor Físico</p>
+               <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+                 <div style="font-size:11px;color:#7f1d1d;">
+                   <strong style="display:block;font-size:12px;">$80–$150</strong>
+                   Fibra dedicada ISP / mes
+                 </div>
+                 <div style="font-size:11px;color:#7f1d1d;">
+                   <strong style="display:block;font-size:12px;">$40–$80</strong>
+                   Electricidad 24/7 / mes
+                 </div>
+                 <div style="font-size:11px;color:#7f1d1d;">
+                   <strong style="display:block;font-size:12px;">$30–$60</strong>
+                   Mantenimiento preventivo / mes
+                 </div>
+               </div>
+               <p style="font-size:11px;color:#991b1b;margin-top:8px;font-weight:600;">Total OPEX fijo mensual del servidor físico: <strong>$150 – $290 USD/mes</strong> adicionales al costo del equipo.</p>
+             </div>
+
+            <p style="font-size:11.5px;font-weight:700;color:var(--navy);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;">Costos Operativos Mensuales (VM)</p>
+            <div class="price-line">
+              <div class="price-desc">Instancia e2-medium (24/7)
+                <small>2 vCPU compartidos, 4 GB RAM - minimo produccion</small>
+              </div>
+              <div class="price-val"><strong>$25 - $30</strong>/mes</div>
+            </div>
+            <div class="price-line">
+              <div class="price-desc">Almacenamiento SSD 50 GB
+                <small>Disco de arranque + datos de la aplicacion</small>
+              </div>
+              <div class="price-val">~<strong>$5</strong>/mes</div>
+            </div>
+            <div class="price-line">
+              <div class="price-desc">IP Publica estatica</div>
+              <div class="price-val">~<strong>$3</strong>/mes</div>
+            </div>
+            <div class="price-line">
+              <div class="price-desc">Trafico de salida (egress)
+                <small>Primeros 1-5 GB/mes estimados para este uso</small>
+              </div>
+              <div class="price-val"><strong>$0.08 - $0.12</strong>/GB</div>
+            </div>
+
+            <div class="total-box expensive">
+              <div>
+                <div class="total-label">Resumen Opcion A</div>
+                <div class="total-sub">Costo FIJO mientras este encendido (12 meses = $480-$720)</div>
+              </div>
+              <div style="text-align:right">
+                <div class="total-amount">$40 - $60</div>
+                <div class="total-sub">USD / mes</div>
+              </div>
+            </div>
+            <p style="font-size:11px;color:var(--grey-light);margin-top:10px;line-height:1.6;">
+              Requiere ademas: configurar servidor web (Nginx), SSL (Certbot), base de datos,
+              seguridad, actualizaciones y monitoreo de forma manual.
+            </p>
+          </div>
+        </div>
+
+        <!-- Opcion B -->
+        <div class="option-card" style="border-color:#86efac;">
+          <div class="option-card-header" style="background:#f0fdf4;border-color:#86efac;">
+            <div class="recommended-badge">Recomendada</div>
+            <div class="option-tag serverless">Serverless - Sin servidor</div>
+            <h3>Opcion B: Firebase Plan Blaze</h3>
+            <p>Firestore + Hosting + Auth + Storage</p>
+          </div>
+          <div class="option-body">
+
+            <!-- One-time setup fee -->
+            <div style="background:linear-gradient(135deg,#fef9c3,#fef3c7);border:1px solid #fde68a;border-radius:8px;padding:12px 14px;margin-bottom:14px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                  <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#92400e;margin-bottom:3px;">&#127381; Costo Inicial de Activación (único)</p>
+                  <p style="font-size:11.5px;color:#78350f;line-height:1.5;">
+                    Cubre la puesta en marcha completa del sistema: configuración de la máquina virtual o 
+                    creación del proyecto Firebase con <strong>base de datos, autenticación, hosting y almacenamiento</strong>.
+                    <strong>Este es el mismo costo único que aparece en la comparación de la VM. Se paga una sola vez.</strong>
+                  </p>
+                </div>
+                <div style="text-align:right;flex-shrink:0;margin-left:16px;">
+                  <div style="font-size:24px;font-weight:900;color:#92400e;">$74.99</div>
+                  <div style="font-size:10px;color:#a16207;">USD &middot; pago unico</div>
+                </div>
+              </div>
+            </div>
+
+            <p style="font-size:12px;font-weight:600;color:var(--navy);margin-bottom:8px;">Capa gratuita incluida cada mes:</p>
+            <div class="free-tier-grid">
+              <div class="free-tier-item">
+                <span class="ftv">50,000</span>
+                <div class="ftl">lecturas / dia</div>
+              </div>
+              <div class="free-tier-item">
+                <span class="ftv">20,000</span>
+                <div class="ftl">escrituras / dia</div>
+              </div>
+              <div class="free-tier-item">
+                <span class="ftv">1 GB</span>
+                <div class="ftl">almacenamiento</div>
+              </div>
+            </div>
+
+            <p style="font-size:12px;font-weight:600;color:var(--navy);margin:10px 0 8px;">Si se excede la capa gratuita (pago por uso):</p>
+            <div class="price-line">
+              <div class="price-desc">Lecturas Firestore adicionales
+                <small>Por encima de 50,000 gratuitas/dia</small>
+              </div>
+              <div class="price-val low">~<strong>$0.18</strong>/100k</div>
+            </div>
+            <div class="price-line">
+              <div class="price-desc">Escrituras Firestore adicionales
+                <small>Por encima de 20,000 gratuitas/dia</small>
+              </div>
+              <div class="price-val low">~<strong>$0.108</strong>/100k</div>
+            </div>
+            <div class="price-line">
+              <div class="price-desc">Almacenamiento adicional
+                <small>Por encima de 1 GB gratuito</small>
+              </div>
+              <div class="price-val low"><strong>$0.026</strong>/GB mes</div>
+            </div>
+            <div class="price-line">
+              <div class="price-desc">Firebase Hosting
+                <small>10 GB/mes transferencia gratuita incluida</small>
+              </div>
+              <div class="price-val free">Gratuito</div>
+            </div>
+
+            <div class="total-box cheap">
+              <div>
+                <div class="total-label">Meses sin censo activo</div>
+                <div class="total-sub">Dentro de la capa gratuita</div>
+              </div>
+              <div style="text-align:right">
+                <div class="total-amount">$0</div>
+                <div class="total-sub">USD / mes</div>
+              </div>
+            </div>
+
+            <!-- Two-column: sin fotos vs con fotos -->
+            <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--navy);margin:14px 0 8px;">Estimado del mes activo del censo:</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+
+              <!-- Sin fotos -->
+              <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px;">
+                <p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#1e40af;margin-bottom:6px;">📄 Solo texto (sin fotos)</p>
+                <div style="font-size:11px;color:#374151;line-height:1.7;">
+                  <div style="display:flex;justify-content:space-between;"><span>Lecturas Firestore</span><span><strong>~$1 - $5</strong></span></div>
+                  <div style="display:flex;justify-content:space-between;"><span>Escrituras nuevos censos</span><span><strong>~$1 - $5</strong></span></div>
+                  <div style="display:flex;justify-content:space-between;"><span>Almacenamiento texto</span><span><strong>~$0</strong></span></div>
+                </div>
+                <div style="border-top:1px dashed #bfdbfe;margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:10px;font-weight:700;color:#1e40af;">TOTAL MES</span>
+                  <span style="font-size:18px;font-weight:900;color:#1e5bb0;">$2 – $15</span>
+                </div>
+                <p style="font-size:10px;color:#6b7280;margin-top:4px;">USD estimado</p>
+              </div>
+
+              <!-- Con fotos -->
+              <div style="background:#fdf4ff;border:1px solid #e9d5ff;border-radius:8px;padding:12px;">
+                <p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#7e22ce;margin-bottom:6px;">📷 Con fotos por familia</p>
+                <div style="font-size:11px;color:#374151;line-height:1.7;">
+                  <div style="display:flex;justify-content:space-between;"><span>Lecturas / escrituras</span><span><strong>~$2 - $8</strong></span></div>
+                  <div style="display:flex;justify-content:space-between;"><span>Storage ~500KB/foto × 1,000 fam.</span><span><strong>~$0.02</strong></span></div>
+                  <div style="display:flex;justify-content:space-between;"><span>Descargas (~5 GB visualizaciones)</span><span><strong>~$0.60</strong></span></div>
+                  <div style="display:flex;justify-content:space-between;"><span>Storage acumulado tras el censo</span><span><strong>~$0.026/GB·mes</strong></span></div>
+                </div>
+                <div style="border-top:1px dashed #e9d5ff;margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:10px;font-weight:700;color:#7e22ce;">TOTAL MES</span>
+                  <span style="font-size:18px;font-weight:900;color:#7c3aed;">$5 – $40</span>
+                </div>
+                <p style="font-size:10px;color:#6b7280;margin-top:4px;">USD estimado · depende del volumen y calidad</p>
+              </div>
+
+            </div>
+
+            <p style="font-size:11px;color:var(--grey-mid);margin-top:12px;line-height:1.6;">
+              Costo total estimado <strong>primer año</strong> (incluye activación $74.99):
+              <strong style="color:var(--green);">$77 – $90 sin fotos</strong> ·
+              <strong style="color:#7c3aed;">$80 – $115 con fotos</strong>.<br>
+              Segundo año en adelante: <strong style="color:var(--green);">$2–$15/año (sin fotos)</strong> ·
+              <strong style="color:#7c3aed;">$5–$40/año (con fotos)</strong>.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DOMAIN SECTION -->
+    <div class="section">
+      <div class="section-title">05 – Dominio y URL de Acceso</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+
+        <!-- Opción 1: Dominio propio .com -->
+        <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+          <div style="background:var(--grey-bg);padding:14px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:inline-block;background:#e0e7ff;color:#3730a3;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;padding:2px 10px;border-radius:20px;margin-bottom:6px;">Opción 1</div>
+            <h3 style="font-size:14px;font-weight:700;color:var(--navy);">Dominio personalizado</h3>
+            <p style="font-size:11px;color:var(--grey-light);margin-top:2px;">p.ej. censocrgm.com</p>
+          </div>
+          <div style="padding:14px 16px;">
+            <div class="price-line">
+              <div class="price-desc">Dominio .com / año<small>Google Domains, Namecheap</small></div>
+              <div class="price-val"><strong>$12 – $15</strong></div>
+            </div>
+            <div class="price-line">
+              <div class="price-desc">Dominio .org / año</div>
+              <div class="price-val"><strong>$10 – $14</strong></div>
+            </div>
+            <div class="price-line">
+              <div class="price-desc">Dominio .gt (Guatemala) / año<small>Requiere trámite ante UVG</small></div>
+              <div class="price-val" style="color:var(--red);"><strong>$40 – $80</strong></div>
+            </div>
+            <div class="price-line">
+              <div class="price-desc">Mapeo a Firebase Hosting<small>CNAME record en el DNS · gratis</small></div>
+              <div class="price-val" style="color:var(--green);">Gratuito</div>
+            </div>
+            <div style="background:var(--grey-bg);border-radius:6px;padding:10px;margin-top:10px;">
+              <p style="font-size:11px;color:var(--grey-mid);line-height:1.6;">
+                Costo anual total: <strong>$12 – $15 USD</strong>. Luego accedes en
+                <em>https://censocrgm.com</em> con SSL automático de Firebase.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Opción 2: Firebase subdomain -->
+        <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+          <div style="background:var(--grey-bg);padding:14px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:inline-block;background:#fef3c7;color:#92400e;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;padding:2px 10px;border-radius:20px;margin-bottom:6px;">Opción 2</div>
+            <h3 style="font-size:14px;font-weight:700;color:var(--navy);">Subdominio Firebase</h3>
+            <p style="font-size:11px;color:var(--grey-light);margin-top:2px;">cen-crgm-app.web.app</p>
+          </div>
+          <div style="padding:14px 16px;">
+            <div class="price-line">
+              <div class="price-desc">URL web.app incluida<small>Asignada automáticamente por Firebase</small></div>
+              <div class="price-val" style="color:var(--green);">Gratuito</div>
+            </div>
+            <div class="price-line">
+              <div class="price-desc">SSL / HTTPS automático<small>Certificado Let's Encrypt gestionado por Google</small></div>
+              <div class="price-val" style="color:var(--green);">Gratuito</div>
+            </div>
+            <div class="price-line">
+              <div class="price-desc">Renovación anual</div>
+              <div class="price-val" style="color:var(--green);">$0</div>
+            </div>
+            <div style="background:#fef9c3;border:1px solid #fde68a;border-radius:6px;padding:10px;margin-top:10px;">
+              <p style="font-size:11px;color:#78350f;line-height:1.6;">
+                URL larga y difícil de recordar. Funcional pero no profesional para comunicar a los censadores.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Opción 3: cen.crgm.app RECOMENDADA -->
+        <div style="border:2px solid #86efac;border-radius:10px;overflow:hidden;">
+          <div style="background:#f0fdf4;padding:14px 16px;border-bottom:1px solid #86efac;">
+            <div style="display:inline-block;background:linear-gradient(135deg,#059669,#10b981);color:white;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;padding:2px 10px;border-radius:20px;margin-bottom:6px;">✅ Recomendada</div>
+            <h3 style="font-size:14px;font-weight:700;color:var(--navy);">Subdominio propio</h3>
+            <p style="font-size:11px;color:var(--grey-light);margin-top:2px;">cen.crgm.app</p>
+          </div>
+          <div style="padding:14px 16px;">
+            <div class="price-line">
+              <div class="price-desc">Dominio crgm.app<small>Ya adquirido — costo ya cubierto</small></div>
+              <div class="price-val" style="color:var(--green);"><strong>$0 adicional</strong></div>
+            </div>
+            <div class="price-line">
+              <div class="price-desc">Subdominio cen.*<small>Solo agregar registro CNAME en el DNS</small></div>
+              <div class="price-val" style="color:var(--green);">Gratuito</div>
+            </div>
+            <div class="price-line">
+              <div class="price-desc">Mapeo en Firebase Hosting<small>Custom domain · sin costo extra</small></div>
+              <div class="price-val" style="color:var(--green);">Gratuito</div>
+            </div>
+            <div class="price-line">
+              <div class="price-desc">SSL automático Google<small>HTTPS listo en 24-48 hrs tras configurar</small></div>
+              <div class="price-val" style="color:var(--green);">Incluido</div>
+            </div>
+            <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:6px;padding:10px;margin-top:10px;">
+              <p style="font-size:11.5px;color:#064e3b;font-weight:600;line-height:1.6;">
+                URL corta, profesional y coherente con la marca: <strong>https://cen.crgm.app</strong>.
+                Costo adicional: <strong style="color:var(--green);">$0 USD</strong>. Solo requiere añadir un registro CNAME al DNS del dominio.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    </div>
+
+    <!-- 06 SIMULACION 60 MESES -->
+    <div class="section">
+      <div class="section-title">06 — Simulación de Costos a 60 Meses (5 años)</div>
+
+      <!-- Monthly cost comparison clear -->
+      <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--navy);margin-bottom:12px;">Costo mensual fijo vs. variable</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+
+        <!-- Physical server monthly -->
+        <div style="border:2px solid #fecaca;border-radius:10px;overflow:hidden;">
+          <div style="background:#fef2f2;padding:12px 16px;border-bottom:1px solid #fecaca;">
+            <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#991b1b;margin-bottom:2px;">🖥️ Servidor Físico — costos fijos cada mes</p>
+            <p style="font-size:11px;color:#9ca3af;">Se paga aunque no haya censo activo</p>
+          </div>
+          <div style="padding:12px 16px;">
+            <p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#991b1b;margin-bottom:8px;">📍 Tarifas reales Izabal, Guatemala — 2026</p>
+            <table style="width:100%;font-size:12px;border-collapse:collapse;">
+              <tr style="border-bottom:1px solid #fee2e2;">
+                <td style="padding:5px 0;color:#6b7280;">Electricidad ENERGUATE<small style="display:block;color:#9ca3af;">Servidor 250W + refrigeración (clima tropical) · Q1.80–2.20/kWh · ~280 kWh/mes</small></td>
+                <td style="text-align:right;font-weight:700;color:#dc2626;">$60 – $90</td>
+              </tr>
+              <tr style="border-bottom:1px solid #fee2e2;">
+                <td style="padding:5px 0;color:#6b7280;">Internet Claro / Tigo Puerto Barrios<small style="display:block;color:#9ca3af;">Plan empresarial + IP fija estática · 20–50 Mbps · Q1,200–1,700/mes</small></td>
+                <td style="text-align:right;font-weight:700;color:#dc2626;">$155 – $220</td>
+              </tr>
+              <tr style="border-bottom:1px solid #fee2e2;">
+                <td style="padding:5px 0;color:#6b7280;">Técnico de mantenimiento<small style="display:block;color:#9ca3af;">No hay empresas IT en Izabal · desplazamiento desde Puerto Barrios o Guat. Ciudad</small></td>
+                <td style="text-align:right;font-weight:700;color:#dc2626;">$50 – $100</td>
+              </tr>
+              <tr style="border-bottom:1px solid #fee2e2;">
+                <td style="padding:5px 0;color:#6b7280;">Amortización equipo ($5,000 / 60 meses)</td>
+                <td style="text-align:right;font-weight:700;color:#dc2626;">$83</td>
+              </tr>
+              <tr style="border-bottom:1px solid #fee2e2;">
+                <td style="padding:5px 0;color:#6b7280;">Batería UPS (reemplazo cada 2 años, amortizada)</td>
+                <td style="text-align:right;font-weight:700;color:#dc2626;">$7</td>
+              </tr>
+              <tr style="border-bottom:1px solid #fee2e2;">
+                <td style="padding:5px 0;color:#6b7280;">Fondo de riesgo humedad/calor Izabal<small style="display:block;color:#9ca3af;">Alta humedad y temperatura aceleran fallas de hardware</small></td>
+                <td style="text-align:right;font-weight:700;color:#dc2626;">$30 – $60</td>
+              </tr>
+              <tr style="background:#fef2f2;">
+                <td style="padding:8px 0;font-weight:700;color:#991b1b;">TOTAL MENSUAL</td>
+                <td style="text-align:right;font-size:16px;font-weight:900;color:#b91c1c;">$385 – $560</td>
+              </tr>
+            </table>
+            <p style="font-size:11px;color:#9ca3af;margin-top:8px;font-style:italic;">Promedio usado en simulación: <strong style="color:#dc2626;">$460/mes</strong> · <strong style="color:#dc2626;">≈ Q3,565/mes</strong></p>
+          </div>
+        </div>
+
+        <!-- Firebase monthly -->
+        <div style="border:2px solid #86efac;border-radius:10px;overflow:hidden;">
+          <div style="background:#f0fdf4;padding:12px 16px;border-bottom:1px solid #86efac;">
+            <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#065f46;margin-bottom:2px;">☁️ Firebase / Nube — costo por uso real</p>
+            <p style="font-size:11px;color:#9ca3af;">Solo se paga cuando se usa activamente</p>
+          </div>
+          <div style="padding:12px 16px;">
+            <table style="width:100%;font-size:12px;border-collapse:collapse;">
+              <tr style="border-bottom:1px solid #bbf7d0;">
+                <td style="padding:5px 0;color:#6b7280;">11 meses sin censo activo</td>
+                <td style="text-align:right;font-weight:700;color:#059669;">$0 – $2</td>
+              </tr>
+              <tr style="border-bottom:1px solid #bbf7d0;">
+                <td style="padding:5px 0;color:#6b7280;">1 mes activo del censo (solo texto)</td>
+                <td style="text-align:right;font-weight:700;color:#059669;">$2 – $15</td>
+              </tr>
+              <tr style="border-bottom:1px solid #bbf7d0;">
+                <td style="padding:5px 0;color:#6b7280;">1 mes activo del censo (con fotos)</td>
+                <td style="text-align:right;font-weight:700;color:#059669;">$5 – $40</td>
+              </tr>
+              <tr style="border-bottom:1px solid #bbf7d0;">
+                <td style="padding:5px 0;color:#6b7280;">Hosting, Auth, SSL</td>
+                <td style="text-align:right;font-weight:700;color:#059669;">$0 (capa gratuita)</td>
+              </tr>
+              <tr style="border-bottom:1px solid #bbf7d0;">
+                <td style="padding:5px 0;color:#6b7280;">Electricidad / ISP</td>
+                <td style="text-align:right;font-weight:700;color:#059669;">$0 (lo paga Google)</td>
+              </tr>
+              <tr style="background:#f0fdf4;">
+                <td style="padding:8px 0;font-weight:700;color:#065f46;">PROMEDIO MENSUAL</td>
+                <td style="text-align:right;font-size:16px;font-weight:900;color:#059669;">$1 – $5</td>
+              </tr>
+            </table>
+            <p style="font-size:11px;color:#9ca3af;margin-top:8px;font-style:italic;">Promedio usado en simulación: <strong style="color:#059669;">$3/mes</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 60-month simulation table -->
+      <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--navy);margin-bottom:10px;">Proyección acumulada mes a mes (5 años)</p>
+
+      <table class="comparison-table" style="font-size:11.5px;">
+        <thead>
+          <tr>
+            <th style="width:15%;">Período</th>
+            <th style="width:25%;">Servidor Físico — mes</th>
+            <th style="width:20%;color:#dc2626;">Acumulado Físico</th>
+            <th style="width:20%;">Firebase — mes</th>
+            <th style="width:20%;color:#059669;">Acumulado Firebase</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Arranque</strong><small style="display:block;color:#9ca3af;">Activación + equipo</small></td>
+            <td style="color:#dc2626;font-weight:700;">$5,000 – $6,575<small style="display:block;color:#9ca3af;">≈ Q38,750 – Q50,956</small></td>
+            <td style="font-weight:900;color:#b91c1c;">$5,000 – $6,575<small style="display:block;font-size:10px;color:#f87171;">≈ Q38,750 – Q50,956</small></td>
+            <td style="color:#059669;font-weight:700;">$74.99<small style="display:block;color:#9ca3af;">≈ Q581</small></td>
+            <td style="font-weight:900;color:#059669;">$74.99<small style="display:block;font-size:10px;color:#4ade80;">≈ Q581</small></td>
+          </tr>
+          <tr style="background:#f9fafb;">
+            <td><strong>Mes 1–12</strong><small style="display:block;color:#9ca3af;">Año 1</small></td>
+            <td style="color:#dc2626;">$460/mes × 12 = $5,520</td>
+            <td style="font-weight:900;color:#b91c1c;">~$10,520 – $12,095<small style="display:block;font-size:10px;color:#f87171;">≈ Q81,530 – Q93,736</small></td>
+            <td style="color:#059669;">~$3/mes × 12 = $36</td>
+            <td style="font-weight:900;color:#059669;">~$111<small style="display:block;font-size:10px;color:#4ade80;">≈ Q860</small></td>
+          </tr>
+          <tr>
+            <td><strong>Mes 13–24</strong><small style="display:block;color:#9ca3af;">Año 2</small></td>
+            <td style="color:#dc2626;">$460/mes × 12 = $5,520</td>
+            <td style="font-weight:900;color:#b91c1c;">~$16,040 – $17,615<small style="display:block;font-size:10px;color:#f87171;">≈ Q124,310 – Q136,516</small></td>
+            <td style="color:#059669;">~$3/mes × 12 = $36</td>
+            <td style="font-weight:900;color:#059669;">~$147<small style="display:block;font-size:10px;color:#4ade80;">≈ Q1,139</small></td>
+          </tr>
+          <tr style="background:#f9fafb;">
+            <td><strong>Mes 25–36</strong><small style="display:block;color:#9ca3af;">Año 3</small></td>
+            <td style="color:#dc2626;">$460/mes × 12 = $5,520</td>
+            <td style="font-weight:900;color:#b91c1c;">~$21,560 – $23,135<small style="display:block;font-size:10px;color:#f87171;">≈ Q167,090 – Q179,296</small></td>
+            <td style="color:#059669;">~$3/mes × 12 = $36</td>
+            <td style="font-weight:900;color:#059669;">~$183<small style="display:block;font-size:10px;color:#4ade80;">≈ Q1,418</small></td>
+          </tr>
+          <tr>
+            <td><strong>Mes 37–48</strong><small style="display:block;color:#9ca3af;">Año 4</small></td>
+            <td style="color:#dc2626;">$460/mes × 12 = $5,520<br><small style="color:#f87171;">⚠️ Posible reemplazo disco NVMe +$500</small></td>
+            <td style="font-weight:900;color:#b91c1c;">~$27,580 – $29,655<small style="display:block;font-size:10px;color:#f87171;">≈ Q213,745 – Q229,826</small></td>
+            <td style="color:#059669;">~$3/mes × 12 = $36</td>
+            <td style="font-weight:900;color:#059669;">~$219<small style="display:block;font-size:10px;color:#4ade80;">≈ Q1,697</small></td>
+          </tr>
+          <tr style="background:#f9fafb;">
+            <td><strong>Mes 49–60</strong><small style="display:block;color:#9ca3af;">Año 5</small></td>
+            <td style="color:#dc2626;">$460/mes × 12 = $5,520<br><small style="color:#f87171;">⚠️ Equipo al límite de vida útil</small></td>
+            <td style="font-weight:900;color:#b91c1c;">~$33,100 – $35,175<small style="display:block;font-size:10px;color:#f87171;">≈ Q256,525 – Q272,606</small></td>
+            <td style="color:#059669;">~$3/mes × 12 = $36</td>
+            <td style="font-weight:900;color:#059669;">~$255<small style="display:block;font-size:10px;color:#4ade80;">≈ Q1,976</small></td>
+          </tr>
+          <!-- TOTAL ROW -->
+          <tr style="background:var(--navy);">
+            <td style="border:none;color:var(--accent);font-weight:900;font-size:12px;text-transform:uppercase;">TOTAL 60 MESES</td>
+            <td style="border:none;color:rgba(255,255,255,0.6);font-size:11px;">$460 × 60 + equipo + riesgos<br><span style="font-size:10px;color:rgba(255,255,255,0.35);">Tasa Q7.75 / USD</span></td>
+            <td style="border:none;text-align:center;">
+              <div style="font-size:18px;font-weight:900;color:#f87171;">$33,100 – $35,175</div>
+              <div style="font-size:11px;color:#fca5a5;font-weight:700;">≈ Q256,525 – Q272,606</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.4);">USD / GTQ estimado</div>
+            </td>
+            <td style="border:none;color:rgba(255,255,255,0.6);font-size:11px;">$3 × 60 + activación<br><span style="font-size:10px;color:rgba(255,255,255,0.35);">Tasa Q7.75 / USD</span></td>
+            <td style="border:none;text-align:center;">
+              <div style="font-size:18px;font-weight:900;color:#4ade80;">~$255</div>
+              <div style="font-size:11px;color:#86efac;font-weight:700;">≈ Q1,976</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.4);">USD / GTQ estimado</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Visual cost bar -->
+      <div style="background:#f4f6f9;border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-top:16px;">
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--grey-mid);margin-bottom:10px;">📊 Diferencia visual — costo total a 5 años (tasa Q7.75 / USD)</p>
+        <div style="margin-bottom:8px;">
+          <div style="display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:4px;">
+            <span style="font-weight:700;color:#dc2626;">🖥️ Servidor Físico (Izabal)</span>
+            <span style="font-weight:900;color:#dc2626;">~$34,000 USD &nbsp;·&nbsp; <span style="color:#f87171;">≈ Q263,500</span></span>
+          </div>
+          <div style="height:26px;background:#fecaca;border-radius:6px;overflow:hidden;">
+            <div style="width:100%;height:100%;background:linear-gradient(90deg,#dc2626,#f87171);border-radius:6px;display:flex;align-items:center;padding-left:10px;">
+              <span style="font-size:10px;font-weight:700;color:white;">$34,000 · Q263,500</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:4px;">
+            <span style="font-weight:700;color:#059669;">☁️ Firebase / Nube</span>
+            <span style="font-weight:900;color:#059669;">~$255 USD &nbsp;·&nbsp; <span style="color:#34d399;">≈ Q1,976</span></span>
+          </div>
+          <div style="height:26px;background:#bbf7d0;border-radius:6px;overflow:hidden;">
+            <div style="width:1%;height:100%;background:linear-gradient(90deg,#059669,#34d399);border-radius:6px;min-width:60px;display:flex;align-items:center;padding-left:10px;">
+              <span style="font-size:10px;font-weight:700;color:white;">$255 · Q1,976</span>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:12px;font-weight:700;color:var(--navy);margin-top:12px;text-align:center;">
+          La nube cuesta <strong style="color:#059669;">~133 veces menos</strong> que el servidor físico en Izabal en 5 años.<br>
+          <span style="color:#dc2626;">Ahorro estimado: <strong>$33,745 USD</strong> · <strong>≈ Q261,524</strong></span>
+        </p>
+      </div>
+
+      <!-- RISK TABLE -->
+      <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--navy);margin:24px 0 10px;">⚠️ Riesgos durante los 60 meses</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+
+        <!-- Physical server risks -->
+        <div style="border:1px solid #fecaca;border-radius:10px;overflow:hidden;">
+          <div style="background:#fef2f2;padding:10px 14px;border-bottom:1px solid #fecaca;">
+            <p style="font-size:11px;font-weight:700;color:#991b1b;text-transform:uppercase;letter-spacing:0.08em;">🖥️ Riesgos — Servidor Físico</p>
+          </div>
+          <div style="padding:12px 14px;">
+            <table style="width:100%;font-size:11.5px;border-collapse:collapse;">
+              <tr style="border-bottom:1px solid #fee2e2;">
+                <td style="padding:6px 0;"><strong style="color:#dc2626;">🔴 Alto</strong> Falla de disco duro o memoria RAM</td>
+                <td style="text-align:right;color:#9ca3af;font-size:10px;">+$200–800</td>
+              </tr>
+              <tr style="border-bottom:1px solid #fee2e2;">
+                <td style="padding:6px 0;"><strong style="color:#dc2626;">🔴 Alto</strong> Corte de luz prolongado (quema equipo)</td>
+                <td style="text-align:right;color:#9ca3af;font-size:10px;">+$500–3,000</td>
+              </tr>
+              <tr style="border-bottom:1px solid #fee2e2;">
+                <td style="padding:6px 0;"><strong style="color:#f59e0b;">🟡 Medio</strong> ISP caído = app sin acceso</td>
+                <td style="text-align:right;color:#9ca3af;font-size:10px;">Sin opción offline</td>
+              </tr>
+              <tr style="border-bottom:1px solid #fee2e2;">
+                <td style="padding:6px 0;"><strong style="color:#f59e0b;">🟡 Medio</strong> Robo o daño físico del equipo</td>
+                <td style="text-align:right;color:#9ca3af;font-size:10px;">Pérdida total</td>
+              </tr>
+              <tr style="border-bottom:1px solid #fee2e2;">
+                <td style="padding:6px 0;"><strong style="color:#f59e0b;">🟡 Medio</strong> Sin actualiz. de seguridad = hackeable</td>
+                <td style="text-align:right;color:#9ca3af;font-size:10px;">+$1,000 recuperación</td>
+              </tr>
+              <tr style="border-bottom:1px solid #fee2e2;">
+                <td style="padding:6px 0;"><strong style="color:#059669;">🟢 Bajo</strong> Sin técnico → app inaccesible</td>
+                <td style="text-align:right;color:#9ca3af;font-size:10px;">Depende de personal</td>
+              </tr>
+              <tr>
+                <td style="padding:6px 0;"><strong style="color:#059669;">🟢 Bajo</strong> Fin de vida útil del equipo (año 4–5)</td>
+                <td style="text-align:right;color:#9ca3af;font-size:10px;">Reemplazo total</td>
+              </tr>
+            </table>
+            <div style="background:#fef2f2;border-radius:6px;padding:8px 10px;margin-top:10px;">
+              <p style="font-size:11px;color:#991b1b;font-weight:600;">Costo adicional por riesgos estimado en 5 años: <strong>$1,000 – $5,000 USD</strong></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Firebase risks -->
+        <div style="border:1px solid #bbf7d0;border-radius:10px;overflow:hidden;">
+          <div style="background:#f0fdf4;padding:10px 14px;border-bottom:1px solid #bbf7d0;">
+            <p style="font-size:11px;font-weight:700;color:#065f46;text-transform:uppercase;letter-spacing:0.08em;">☁️ Riesgos — Firebase / Nube</p>
+          </div>
+          <div style="padding:12px 14px;">
+            <table style="width:100%;font-size:11.5px;border-collapse:collapse;">
+              <tr style="border-bottom:1px solid #bbf7d0;">
+                <td style="padding:6px 0;"><strong style="color:#f59e0b;">🟡 Medio</strong> Costo inesperado si hay tráfico anormal</td>
+                <td style="text-align:right;color:#9ca3af;font-size:10px;">Con alertas: $0 extra</td>
+              </tr>
+              <tr style="border-bottom:1px solid #bbf7d0;">
+                <td style="padding:6px 0;"><strong style="color:#059669;">🟢 Bajo</strong> Google cambia precios (históricamente estable)</td>
+                <td style="text-align:right;color:#9ca3af;font-size:10px;">Aviso previo 6 meses</td>
+              </tr>
+              <tr style="border-bottom:1px solid #bbf7d0;">
+                <td style="padding:6px 0;"><strong style="color:#059669;">🟢 Bajo</strong> Sin internet en oficina → usar datos móviles</td>
+                <td style="text-align:right;color:#9ca3af;font-size:10px;">App tiene modo offline</td>
+              </tr>
+              <tr style="border-bottom:1px solid #bbf7d0;">
+                <td style="padding:6px 0;"><strong style="color:#059669;">🟢 Bajo</strong> Caída de Google (ocurre <1 vez/año, minutos)</td>
+                <td style="text-align:right;color:#9ca3af;font-size:10px;">SLA 99.95%</td>
+              </tr>
+              <tr style="border-bottom:1px solid #bbf7d0;">
+                <td style="padding:6px 0;"><strong style="color:#059669;">🟢 Bajo</strong> Datos fuera de Guatemala</td>
+                <td style="text-align:right;color:#9ca3af;font-size:10px;">Servidores en EE.UU.</td>
+              </tr>
+              <tr style="border-bottom:1px solid #bbf7d0;">
+                <td style="padding:6px 0;"><strong style="color:#059669;">🟢 Bajo</strong> Falta de soporte técnico local</td>
+                <td style="text-align:right;color:#9ca3af;font-size:10px;">Panel web de control</td>
+              </tr>
+              <tr>
+                <td style="padding:6px 0;"><strong style="color:#059669;">🟢 Sin riesgo</strong> Falla de hardware / luz / robo</td>
+                <td style="text-align:right;color:#9ca3af;font-size:10px;">No aplica</td>
+              </tr>
+            </table>
+            <div style="background:#f0fdf4;border-radius:6px;padding:8px 10px;margin-top:10px;">
+              <p style="font-size:11px;color:#065f46;font-weight:600;">Costo adicional por riesgos estimado en 5 años: <strong>$0 – $50 USD</strong></p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 07 Conclusion -->
+    <!-- 08 Módulos adicionales -->
+    <div class="section">
+      <div class="section-title">08 — Módulos Adicionales — La App Puede Crecer</div>
+
+      <div style="background:linear-gradient(135deg,#f0f4ff,#e8edff);border:1px solid #c7d2fe;border-radius:10px;padding:14px 18px;margin-bottom:18px;display:flex;gap:10px;align-items:flex-start;">
+        <span style="font-size:18px;">&#128161;</span>
+        <div style="font-size:12.5px;color:#3730a3;line-height:1.7;">
+          La aplicación actual incluye el módulo de <strong>Censo y Estadísticas</strong>.
+          Al estar construida sobre Firebase, <strong>agregar nuevos módulos es sencillo</strong> — la base
+          de datos, autenticación y hosting ya están listos. Cada módulo adicional es una inversión
+          separada y opcional, que la iglesia puede activar cuando lo necesite.
+        </div>
+      </div>
+
+      <!-- Module grid -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+
+        <!-- Column 1 -->
+        <div>
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--navy);margin-bottom:10px;">&#128204; Módulos de administración y finanzas</p>
+
+          <div style="border:1px solid #dce3ec;border-radius:10px;overflow:hidden;margin-bottom:12px;">
+            <table style="width:100%;font-size:12px;border-collapse:collapse;">
+              <tr style="background:#f0f4ff;border-bottom:1px solid #dce3ec;">
+                <td style="padding:9px 12px;" colspan="2">
+                  <strong style="color:#1e3a8a;">💰 Colectas, Limosnas y Ofrendas</strong><br>
+                  <small style="color:#6b7280;">Registro de colectas y limosnas por feligrés, historial, reportes mensuales y anuales, exportación a Excel.</small>
+                </td>
+                <td style="padding:9px 12px;text-align:right;font-weight:700;white-space:nowrap;">~$580<br><small style="color:#9ca3af;">≈ Q4,495</small></td>
+              </tr>
+              <tr style="border-bottom:1px solid #dce3ec;">
+                <td style="padding:9px 12px;" colspan="2">
+                  <strong style="color:#1e3a8a;">📋 Asistencia a Misas y Celebraciones</strong><br>
+                  <small style="color:#6b7280;">Registro de asistencia a misas dominicales, retiros espirituales, convivencias. Gráficas de tendencia por período.</small>
+                </td>
+                <td style="padding:9px 12px;text-align:right;font-weight:700;white-space:nowrap;">~$420<br><small style="color:#9ca3af;">≈ Q3,255</small></td>
+              </tr>
+              <tr style="border-bottom:1px solid #dce3ec;">
+                <td style="padding:9px 12px;" colspan="2">
+                  <strong style="color:#1e3a8a;">📅 Eventos e Inscripciones</strong><br>
+                  <small style="color:#6b7280;">Publicación de eventos, formulario de inscripción en línea, lista de participantes, recordatorios automáticos.</small>
+                </td>
+                <td style="padding:9px 12px;text-align:right;font-weight:700;white-space:nowrap;">~$490<br><small style="color:#9ca3af;">≈ Q3,798</small></td>
+              </tr>
+              <tr>
+                <td style="padding:9px 12px;" colspan="2">
+                  <strong style="color:#1e3a8a;">🏠 Comunidades de Base</strong><br>
+                  <small style="color:#6b7280;">Gestión de comunidades eclesiales de base, coordinadores, integrantes, reporte de visitas pastorales.</small>
+                </td>
+                <td style="padding:9px 12px;text-align:right;font-weight:700;white-space:nowrap;">~$380<br><small style="color:#9ca3af;">≈ Q2,945</small></td>
+              </tr>
+            </table>
+          </div>
+
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--navy);margin-bottom:10px;">&#128203; Apostolados y Agentes Pastorales</p>
+
+          <div style="border:1px solid #dce3ec;border-radius:10px;overflow:hidden;">
+            <table style="width:100%;font-size:12px;border-collapse:collapse;">
+              <tr style="background:#f0fdf4;border-bottom:1px solid #dce3ec;">
+                <td style="padding:9px 12px;" colspan="2">
+                  <strong style="color:#065f46;">🎺 Comisiones Parroquiales y Agentes Pastorales</strong><br>
+                  <small style="color:#6b7280;">Área de coro, ministros de hospitalidad, pastoral infantil, juventud, comité de cocina. Asignación de roles y turnos por evento.</small>
+                </td>
+                <td style="padding:9px 12px;text-align:right;font-weight:700;white-space:nowrap;">~$350<br><small style="color:#9ca3af;">≈ Q2,713</small></td>
+              </tr>
+              <tr>
+                <td style="padding:9px 12px;" colspan="2">
+                  <strong style="color:#065f46;">👶 Pastoral Infantil y Catequesis</strong><br>
+                  <small style="color:#6b7280;">Registro de niños con su padre o tutor, asistencia a catequesis, materiales por grupo, autorización.</small>
+                </td>
+                <td style="padding:9px 12px;text-align:right;font-weight:700;white-space:nowrap;">~$440<br><small style="color:#9ca3af;">≈ Q3,410</small></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- Column 2 -->
+        <div>
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--navy);margin-bottom:10px;">&#128172; Comunicación y Acompañamiento Pastoral</p>
+
+          <div style="border:1px solid #dce3ec;border-radius:10px;overflow:hidden;margin-bottom:12px;">
+            <table style="width:100%;font-size:12px;border-collapse:collapse;">
+              <tr style="background:#fef9c3;border-bottom:1px solid #dce3ec;">
+                <td style="padding:9px 12px;" colspan="2">
+                  <strong style="color:#78350f;">📣 Anuncios y Boletín Parroquial</strong><br>
+                  <small style="color:#6b7280;">El párroco o coordinador publica avisos desde el celular. Los feligreses los consultan en la aplicación. Sin imprimir nada.</small>
+                </td>
+                <td style="padding:9px 12px;text-align:right;font-weight:700;white-space:nowrap;">~$290<br><small style="color:#9ca3af;">≈ Q2,248</small></td>
+              </tr>
+              <tr style="border-bottom:1px solid #dce3ec;">
+                <td style="padding:9px 12px;" colspan="2">
+                  <strong style="color:#78350f;">🙏 Intenciones de Oración</strong><br>
+                  <small style="color:#6b7280;">Los feligreses envían sus intenciones, el grupo de oración las recibe y las lleva al altar. Privacidad configurable.</small>
+                </td>
+                <td style="padding:9px 12px;text-align:right;font-weight:700;white-space:nowrap;">~$260<br><small style="color:#9ca3af;">≈ Q2,015</small></td>
+              </tr>
+              <tr style="border-bottom:1px solid #dce3ec;">
+                <td style="padding:9px 12px;" colspan="2">
+                  <strong style="color:#78350f;">🚪 Acompañamiento Pastoral</strong><br>
+                  <small style="color:#6b7280;">Registro de visitas a familias en necesidad, notas privadas del párroco, alertas de seguimiento fraterno.</small>
+                </td>
+                <td style="padding:9px 12px;text-align:right;font-weight:700;white-space:nowrap;">~$480<br><small style="color:#9ca3af;">≈ Q3,720</small></td>
+              </tr>
+              <tr>
+                <td style="padding:9px 12px;" colspan="2">
+                  <strong style="color:#78350f;">📖 Biblioteca Parroquial</strong><br>
+                  <small style="color:#6b7280;">Homilías en PDF, audios de reflexiones, videos catequéticos, materiales del Evangelio organizados por tiempo litúrgico.</small>
+                </td>
+                <td style="padding:9px 12px;text-align:right;font-weight:700;white-space:nowrap;">~$310<br><small style="color:#9ca3af;">≈ Q2,403</small></td>
+              </tr>
+            </table>
+          </div>
+
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--navy);margin-bottom:10px;">&#127891; Avanzados (futuro)</p>
+
+          <div style="border:1px solid #dce3ec;border-radius:10px;overflow:hidden;">
+            <table style="width:100%;font-size:12px;border-collapse:collapse;">
+              <tr style="background:#fef2f2;border-bottom:1px solid #dce3ec;">
+                <td style="padding:9px 12px;" colspan="2">
+                  <strong style="color:#991b1b;">💳 Donaciones y Ofrendas en Línea</strong><br>
+                  <small style="color:#6b7280;">Integración con pasarela de pago (Stripe o PayPal). Ofrendas y limosnas en línea desde cualquier lugar.</small>
+                </td>
+                <td style="padding:9px 12px;text-align:right;font-weight:700;white-space:nowrap;">~$780<br><small style="color:#9ca3af;">≈ Q6,045</small></td>
+              </tr>
+              <tr>
+                <td style="padding:9px 12px;" colspan="2">
+                  <strong style="color:#991b1b;">📡 App Móvil Nativa (Android / iOS)</strong><br>
+                  <small style="color:#6b7280;">Versión instalable en el celular con notificaciones push, acceso sin navegador. La app actual ya funciona en móvil como PWA.</small>
+                </td>
+                <td style="padding:9px 12px;text-align:right;font-weight:700;white-space:nowrap;">~$1,200<br><small style="color:#9ca3af;">≈ Q9,300</small></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary note -->
+      <div style="background:var(--navy);border-radius:10px;padding:16px 20px;margin-top:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        <div>
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent);margin-bottom:4px;">Ventaja de crecer con esta plataforma</p>
+          <p style="font-size:12px;color:rgba(255,255,255,0.75);max-width:480px;line-height:1.65;">
+            Como Firebase e infraestructura ya están pagados ($74.99 costo inicial),
+            cada nuevo módulo es <strong style="color:white;">significativamente más barato</strong> que empezar desde cero.
+            No hay costo adicional de servidor ni hosting al agregar módulos.
+          </p>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:4px;">Paquete completo (todos los módulos)</div>
+          <div style="font-size:22px;font-weight:900;color:var(--accent);">~$5,980</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.6);">≈ Q46,345 · adicionales al censo</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px;">Precio sin descuento · negociable</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 07 Conclusion -->
+    <div class="section" style="margin-bottom:0;">
+      <div class="section-title">07 - Conclusión y Recomendación Final</div>
+      <div class="conclusion">
+        <h3>Firebase Serverless es la eleccion inteligente</h3>
+        <p>
+          Para un sistema de censo con <strong>uso intensivo pero estacional</strong>, el modelo serverless
+          de Firebase elimina el mayor problema de la infraestructura tradicional:
+          <span class="accent">pagar por capacidad que no se usa</span>.
+        </p>
+        <p>
+          Mientras un servidor fisico implica costos fijos de <strong>$480 a $720+ USD/año</strong>,
+          Firebase permite operar durante meses enteros con <span class="accent">costo cero</span>,
+          escalando automaticamente solo durante los dias criticos del censo y regresando a $0 al terminar
+          - <strong>sin intervencion manual, sin mantenimiento de hardware y con seguridad de nivel
+          empresarial garantizada por Google</strong>.
+        </p>
+        <div class="verdict-row">
+          <div class="verdict-item">
+            <div class="vi-icon">&#128176;</div>
+            <div class="vi-title">Ahorro estimado</div>
+            <div class="vi-val">&gt; 90% anual</div>
+          </div>
+          <div class="verdict-item">
+            <div class="vi-icon">&#9889;</div>
+            <div class="vi-title">Escalabilidad</div>
+            <div class="vi-val">Automatica / Ilimitada</div>
+          </div>
+          <div class="verdict-item">
+            <div class="vi-icon">&#127919;</div>
+            <div class="vi-title">Costo meses sin censo</div>
+            <div class="vi-val" style="color:var(--accent)">$0 USD</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">
+      Presupuesto de Infraestructura - Aplicacion de Censo Parroquial<br>
+      Documento confidencial - Uso interno
+    </div>
+    <div class="footer-right">
+      Precios estimados basados en tarifas publicas de Google Cloud.<br>
+      Sujetos a cambio. Revisar cloud.google.com/pricing
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
