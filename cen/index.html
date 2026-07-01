@@ -15,6 +15,18 @@
     body { font-family:'Roboto',Helvetica,Arial,sans-serif; background:#e8ecf1; color:var(--grey-dark); font-size:13px; line-height:1.6; }
     .page { max-width:860px; margin:40px auto; background:var(--white); box-shadow:0 4px 40px rgba(0,0,0,0.15); overflow:hidden; }
 
+    /* Tables: repeat header on page break */
+    thead { display: table-header-group; }
+    tfoot { display: table-footer-group; }
+    tr { page-break-inside: avoid; break-inside: avoid; }
+
+    /* Cover page: compact on screen — does NOT fill viewport */
+    .cover-page { display: block; }
+    .cover-page .header { padding: 44px 60px 36px; }
+
+    /* Section title numbering style */
+    .section-title { font-size: 11.5px; }
+
     /* Header */
     .header { background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 60%,var(--blue) 100%); padding:52px 60px 44px; position:relative; overflow:hidden; }
     .header::before { content:''; position:absolute; top:-60px; right:-60px; width:300px; height:300px; border-radius:50%; background:rgba(255,255,255,0.04); }
@@ -54,6 +66,10 @@
     .comparison-table tbody td:first-child { font-weight:600; color:var(--navy-mid); font-size:11px; text-transform:uppercase; letter-spacing:0.05em; white-space:normal; }
     .comparison-table tbody td.bad { color:var(--red); font-weight:500; }
     .comparison-table tbody td.good { color:var(--green); font-weight:600; }
+    /* Tabla compacta: menos padding y fuente más chica, filas más bajas */
+    .comparison-table.table-compact thead th { padding:8px 10px; font-size:10.5px; }
+    .comparison-table.table-compact tbody td { padding:6px 10px; font-size:11.5px; line-height:1.35; }
+    .comparison-table.table-compact tbody td:first-child { white-space:nowrap; font-size:10.5px; }
 
     /* Option cards */
     .options-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
@@ -116,120 +132,126 @@
     @media print {
       @page {
         size: letter portrait;
-        margin: 14mm 16mm 14mm 16mm;
+        margin: 12mm 14mm 12mm 14mm;
       }
 
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 
-      body { background: white !important; font-size: 11px !important; }
+      body { background: white !important; font-size: 10.5px !important; }
 
       /* Page wrapper — full width, no shadow */
       .page { box-shadow: none !important; margin: 0 !important; max-width: 100% !important; width: 100% !important; }
 
-      /* Header compact on print */
-      .header { padding: 28px 36px 22px !important; }
-      .header h1 { font-size: 20px !important; }
-      .header-subtitle { font-size: 11px !important; }
-      .header-meta { margin-top: 16px !important; gap: 24px !important; }
-
-      /* Cover page: header fills full first page, vertically centered */
+      /* Cover page: compacta, sin salto de página — el contenido empieza inmediatamente después */
       .cover-page {
-        min-height: 100vh !important;
-        display: flex !important;
-        flex-direction: column !important;
-        break-after: page !important;
-        page-break-after: always !important;
+        display: block !important;
+        break-after: avoid !important;
+        page-break-after: avoid !important;
       }
-      .cover-page .header {
-        flex: 1 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important;
-        align-items: flex-start !important;
-        padding: 60px 72px !important;
-      }
-      .cover-page .header h1  { font-size: 32px !important; margin-bottom: 18px !important; }
-      .cover-page .header-subtitle { font-size: 14px !important; }
-      .cover-page .header-meta { margin-top: 44px !important; gap: 48px !important; }
-      .cover-page .header-meta-item label { font-size: 10px !important; }
-      .cover-page .header-meta-item span  { font-size: 14px !important; }
-      .cover-page .accent-bar { height: 6px !important; }
+      .cover-page .header { padding: 28px 32px 22px !important; }
+      .cover-page .header h1 { font-size: 22px !important; margin-bottom: 10px !important; }
+      .cover-page .header-subtitle { font-size: 11px !important; }
+      .cover-page .header-meta { margin-top: 18px !important; gap: 28px !important; }
+      .cover-page .accent-bar { height: 4px !important; }
 
-      /* Content tighter padding */
-      .content { padding: 22px 36px !important; }
-      .section { margin-bottom: 24px !important; }
+      /* Content padding */
+      .content { padding: 14px 32px !important; }
+      .section { margin-bottom: 18px !important; }
 
-      /* Never cut these elements across pages */
-      .section,
-      .section-title,
-      .comparison-table,
-      .options-grid,
-      .option-card,
-      .option-body,
-      .exec-summary,
-      .insight,
-      .verdict-row,
-      .verdict-item,
-      .free-tier-grid,
-      .free-tier-item,
-      .conclusion,
-      tr,
-      td,
-      th { break-inside: avoid !important; page-break-inside: avoid !important; }
-
-      /* Force page break before major sections to avoid mid-section cuts */
-      .section { break-before: auto; }
-
-      /* Tables: allow wrapping, prevent overflow */
-      .comparison-table,
-      table { width: 100% !important; table-layout: fixed !important; word-break: break-word !important; overflow: hidden !important; }
-
-      table td, table th { padding: 7px 10px !important; font-size: 10.5px !important; word-break: break-word !important; overflow-wrap: break-word !important; }
-
-      /* Grids: stack to single column when too narrow, or reduce gap */
-      div[style*="grid-template-columns:1fr 1fr"] { gap: 10px !important; }
-      div[style*="grid-template-columns:1fr 1fr 1fr"] { gap: 8px !important; }
-
-      /* Prevent floated buttons and interactive elements from printing */
-      .print-btn-wrap { display: none !important; }
-      .footer { padding: 10px 36px !important; }
-
-      /* Avoid orphan headers */
+      /* Section titles: no cortar del contenido que sigue */
       .section-title { break-after: avoid !important; page-break-after: avoid !important; }
 
-      /* Conclusions and info cards */
-      .conclusion { padding: 18px 22px !important; border-radius: 8px !important; }
-      .verdict-row { gap: 8px !important; }
+      /* Numeral 02: empieza siempre en hoja nueva (evita corte con espacio en blanco) */
+      #seccion-02 { break-before: page !important; page-break-before: always !important; }
 
-      /* Font scale adjustments */
+      /* Elementos compactos que NO se deben partir */
+      .exec-summary,
+      .insight,
+      .verdict-item,
+      .free-tier-item,
+      .conclusion,
+      .option-card-header,
+      .total-box { break-inside: avoid !important; page-break-inside: avoid !important; }
+
+      /* Grids de 2 columnas (option-cards): apilar en 1 columna en impresión */
+      .options-grid {
+        display: block !important;
+        gap: 0 !important;
+      }
+      .options-grid .option-card {
+        margin-bottom: 14px !important;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+      }
+
+      /* Grids de 3 columnas: reducir gap */
+      .free-tier-grid { gap: 6px !important; }
+
+      /* Tables: encabezados repetidos al cortar */
+      thead { display: table-header-group !important; }
+      tfoot { display: table-footer-group !important; }
+      .comparison-table,
+      table { width: 100% !important; word-break: break-word !important; overflow: visible !important; border-collapse: collapse !important; }
+
+      /* Filas: no partir a mitad, pero SÍ permitir salto entre filas */
+      tr { break-inside: avoid !important; page-break-inside: avoid !important; }
+
+      table td, table th { padding: 5px 8px !important; font-size: 10px !important; word-break: break-word !important; overflow-wrap: break-word !important; }
+
+      /* Botones y elementos de pantalla: ocultar */
+      .print-btn-wrap { display: none !important; }
+      .footer { padding: 8px 32px !important; }
+
+      /* Conclusion */
+      .conclusion { padding: 16px 20px !important; border-radius: 8px !important; }
+      .verdict-row { gap: 6px !important; }
+
+      /* Tipografía */
       h1, h2, h3 { line-height: 1.3 !important; }
-      p, td, th, li, small { line-height: 1.5 !important; }
-
-      /* Remove background gradients that cause issues on some printers */
+      p, td, th, li, small { line-height: 1.45 !important; }
       .accent-bar { height: 3px !important; }
     }
 
-    /* Floating print button */
+    /* ─── MODO HOJA LARGA (PDF corrido) ─── */
+    /* Cuando se activa con el botón "PDF largo", sobreescribe el @media print */
+    body.print-long-mode .page { max-width: 860px !important; }
+    @media print {
+      body.print-long-mode {
+        background: white !important;
+      }
+      body.print-long-mode .page {
+        box-shadow: none !important;
+        margin: 0 auto !important;
+        max-width: 100% !important;
+        width: 100% !important;
+      }
+    }
+    /* La hoja larga se implementa via JS cambiando @page size a auto */
+    .print-long-style {
+      display: none;
+    }
+
+    /* Floating print buttons */
     .print-btn-wrap {
-      position:fixed; bottom:28px; right:28px; z-index:9999;
-      display:flex; flex-direction:column; align-items:flex-end; gap:10px;
+      position:fixed; bottom:24px; right:24px; z-index:9999;
+      display:flex; flex-direction:column; align-items:flex-end; gap:8px;
     }
     .print-tip {
       background:var(--navy); color:white; border-radius:10px;
-      padding:14px 18px; font-size:12.5px; line-height:1.8;
-      box-shadow:0 8px 32px rgba(0,0,0,0.3); max-width:260px;
+      padding:14px 18px; font-size:12px; line-height:1.75;
+      box-shadow:0 8px 32px rgba(0,0,0,0.3); max-width:280px;
       display:none;
     }
     .print-tip strong { color:var(--accent); }
     .print-tip ol { padding-left:18px; margin-top:6px; }
-    .print-tip li { margin-bottom:3px; }
+    .print-tip li { margin-bottom:4px; }
     .print-btn-wrap:hover .print-tip { display:block; }
     .print-btn {
       background:linear-gradient(135deg,#059669,#10b981);
       color:white; border:none; border-radius:50px;
-      padding:13px 24px; font-size:14px; font-weight:700;
+      padding:10px 20px; font-size:13px; font-weight:700;
       cursor:pointer; box-shadow:0 6px 24px rgba(5,150,105,0.45);
-      display:flex; align-items:center; gap:9px;
+      display:flex; align-items:center; gap:8px;
       transition:transform 0.15s, box-shadow 0.15s;
       font-family:'Roboto',sans-serif;
     }
@@ -239,22 +261,49 @@
 </head>
 <body>
 
-<!-- FLOATING PRINT BUTTON -->
+<!-- FLOATING PRINT BUTTONS -->
+<style id="dynamic-page-size"></style>
 <div class="print-btn-wrap">
   <div class="print-tip">
-    <strong>&#128161; ¿Cómo guardar como PDF?</strong>
+    <strong>&#128161; Dos opciones de PDF:</strong>
     <ol>
-      <li>Haz clic en el botón verde &#8595;</li>
-      <li>Se abrirá la ventana de impresión</li>
-      <li>En <strong>"Destino"</strong> elige<br><strong>"Guardar como PDF"</strong></li>
-      <li>Haz clic en <strong>"Guardar"</strong></li>
+      <li><strong>PDF Carta (páginas)</strong> — formato estándar tamaño carta, con saltos de página</li>
+      <li><strong>PDF Corrido (hoja larga)</strong> — igual al HTML, una sola hoja continua sin cortes</li>
     </ol>
-    <p style="margin-top:8px;font-size:11px;color:rgba(255,255,255,0.55);">Pasa el mouse por encima para ver estas instrucciones de nuevo.</p>
+    <p style="margin-top:8px;font-size:11px;color:rgba(255,255,255,0.55);">En ambos casos: Destino → <strong>"Guardar como PDF"</strong></p>
   </div>
-  <button class="print-btn" onclick="window.print()">
-    &#128438; Guardar como PDF
+  <button class="print-btn" style="background:linear-gradient(135deg,#1e5bb0,#2d7de0);box-shadow:0 6px 24px rgba(30,91,176,0.45);" onclick="printLong()">
+    &#128203; PDF Corrido (hoja larga)
+  </button>
+  <button class="print-btn" onclick="printNormal()">
+    &#128438; PDF Carta (páginas)
   </button>
 </div>
+<script>
+function printNormal() {
+  document.getElementById('dynamic-page-size').textContent = '';
+  document.body.classList.remove('print-long-mode');
+  window.print();
+}
+function printLong() {
+  // Inyecta @page con tamaño auto para hoja continua sin paginación
+  document.getElementById('dynamic-page-size').textContent =
+    '@media print { @page { size: 860px auto !important; margin: 16mm 18mm !important; } ' +
+    '.cover-page { break-after: avoid !important; page-break-after: avoid !important; } ' +
+    '.options-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 16px !important; } ' +
+    '.options-grid .option-card { margin-bottom: 0 !important; } ' +
+    'body { font-size: 12px !important; } ' +
+    'table td, table th { font-size: 11px !important; padding: 8px 12px !important; } }';
+  document.body.classList.add('print-long-mode');
+  setTimeout(function() {
+    window.print();
+    setTimeout(function() {
+      document.getElementById('dynamic-page-size').textContent = '';
+      document.body.classList.remove('print-long-mode');
+    }, 1000);
+  }, 100);
+}
+</script>
 <div class="page">
 
   <div class="cover-page">
@@ -292,17 +341,17 @@
         <div style="background:white;border:1px solid #dce3ec;border-radius:10px;overflow:hidden;">
           <div style="background:var(--navy);padding:10px 14px;">
             <p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);">Componente 1</p>
-            <p style="font-size:13px;font-weight:700;color:white;margin-top:2px;">💻 Programación</p>
+            <p style="font-size:13px;font-weight:700;color:white;margin-top:2px;">&#128187; Programaci&oacute;n</p>
             <p style="font-size:10px;color:rgba(255,255,255,0.55);">Pago único · no se repite</p>
           </div>
           <div style="padding:12px 14px;">
             <div style="border-bottom:1px solid #f0f4f8;padding:7px 0;display:flex;justify-content:space-between;align-items:center;">
-              <div><span style="font-size:11px;color:var(--grey-dark);">Con descuento iglesia 25%</span><br><span style="font-size:10px;color:#059669;font-weight:700;">✅ Recomendado</span></div>
-              <div style="text-align:right;"><strong style="color:var(--navy);">$1,218</strong><br><small style="color:#9ca3af;">≈ Q9,440</small></div>
+              <div><span style="font-size:11px;color:var(--grey-dark);">Con descuento apoyo 70%</span><br><span style="font-size:10px;color:#059669;font-weight:700;">&#10003; Recomendado</span></div>
+              <div style="text-align:right;"><strong style="color:var(--navy);">$580</strong><br><small style="color:#9ca3af;">&asymp; Q4,495</small></div>
             </div>
             <div style="padding:7px 0;display:flex;justify-content:space-between;align-items:center;">
               <span style="font-size:11px;color:var(--grey-dark);">Sin descuento (precio mercado)</span>
-              <div style="text-align:right;"><strong style="color:var(--grey-mid);">$1,624</strong><br><small style="color:#9ca3af;">≈ Q12,586</small></div>
+              <div style="text-align:right;"><strong style="color:var(--grey-mid);">$1,624</strong><br><small style="color:#9ca3af;">&asymp; Q12,586</small></div>
             </div>
           </div>
         </div>
@@ -311,19 +360,19 @@
         <div style="background:white;border:1px solid #dce3ec;border-radius:10px;overflow:hidden;">
           <div style="background:var(--navy);padding:10px 14px;">
             <p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);">Componente 2</p>
-            <p style="font-size:13px;font-weight:700;color:white;margin-top:2px;">🖥️ Infraestructura</p>
+            <p style="font-size:13px;font-weight:700;color:white;margin-top:2px;">&#128421; Infraestructura</p>
             <p style="font-size:10px;color:rgba(255,255,255,0.55);">Inicial + mensual continuo</p>
           </div>
           <div style="padding:12px 14px;">
             <div style="border-bottom:1px solid #f0f4f8;padding:7px 0;">
               <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                <div><span style="font-size:11px;color:var(--grey-dark);">☁️ Firebase / Nube</span><br><span style="font-size:10px;color:#059669;font-weight:700;">✅ Recomendado</span></div>
+                <div><span style="font-size:11px;color:var(--grey-dark);">&#9729; Firebase / Nube</span><br><span style="font-size:10px;color:#059669;font-weight:700;">✅ Recomendado</span></div>
                 <div style="text-align:right;"><strong style="color:#059669;">$74.99</strong> inicio<br><strong style="color:#059669;">+$3</strong>/mes<br><small style="color:#9ca3af;">≈ Q581 + Q23/mes</small></div>
               </div>
             </div>
             <div style="padding:7px 0;">
               <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                <div><span style="font-size:11px;color:var(--grey-dark);">🖥️ Servidor físico (Izabal)</span></div>
+                <div><span style="font-size:11px;color:var(--grey-dark);">&#128421; Servidor f&iacute;sico (Izabal)</span></div>
                 <div style="text-align:right;"><strong style="color:#dc2626;">$5,000</strong> inicio<br><strong style="color:#dc2626;">+$460</strong>/mes<br><small style="color:#9ca3af;">≈ Q38,750 + Q3,565/mes</small></div>
               </div>
             </div>
@@ -334,7 +383,7 @@
         <div style="background:white;border:1px solid #dce3ec;border-radius:10px;overflow:hidden;">
           <div style="background:var(--navy);padding:10px 14px;">
             <p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);">Componente 3</p>
-            <p style="font-size:13px;font-weight:700;color:white;margin-top:2px;">🌐 Dominio / URL</p>
+            <p style="font-size:13px;font-weight:700;color:white;margin-top:2px;">&#127760; Dominio / URL</p>
             <p style="font-size:10px;color:rgba(255,255,255,0.55);">Pago anual o cero adicional</p>
           </div>
           <div style="padding:12px 14px;">
@@ -356,7 +405,7 @@
       </div>
 
       <!-- Combinations matrix -->
-      <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--navy);margin-bottom:10px;">🔢 Todas las combinaciones posibles — costo total primer año</p>
+      <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--navy);margin-bottom:10px;">&#128290; Todas las combinaciones posibles &mdash; costo total primer a&ntilde;o</p>
 
       <table class="comparison-table" style="font-size:11.5px;">
         <thead>
@@ -373,33 +422,33 @@
           <!-- A: Recommended -->
           <tr style="background:linear-gradient(90deg,#f0fdf4,#fafffe);border-left:4px solid #059669;">
             <td style="text-align:center;font-weight:900;color:#059669;">A</td>
-            <td><strong style="color:#065f46;">$1,218</strong><br><small style="color:#9ca3af;">Con descuento iglesia</small></td>
+            <td><strong style="color:#065f46;">$580</strong><br><small style="color:#9ca3af;">Con descuento 70%</small></td>
             <td><strong style="color:#059669;">Firebase $74.99</strong><br><small style="color:#9ca3af;">+ $3/mes</small></td>
             <td><strong style="color:#059669;">$0</strong><br><small style="color:#9ca3af;">cen.crgm.app</small></td>
             <td>
-              <strong style="color:#065f46;font-size:13px;">$1,292.99</strong><br>
-              <small style="color:#34d399;">≈ Q10,021</small>
+              <strong style="color:#065f46;font-size:13px;">$654.99</strong><br>
+              <small style="color:#34d399;">&asymp; Q5,076</small>
             </td>
             <td style="background:#f0fdf4;">
-              <strong style="color:#059669;font-size:14px;">$1,328.99</strong><br>
-              <small style="color:#34d399;">≈ Q10,300</small><br>
+              <strong style="color:#059669;font-size:14px;">$690.99</strong><br>
+              <small style="color:#34d399;">&asymp; Q5,355</small><br>
               <small style="color:#9ca3af;font-size:9px;">+$36 Firebase anual</small>
-              <div style="font-size:9px;background:#059669;color:white;border-radius:4px;padding:2px 6px;display:inline-block;margin-top:3px;">✅ MEJOR OPCIÓN</div>
+              <div style="font-size:9px;background:#059669;color:white;border-radius:4px;padding:2px 6px;display:inline-block;margin-top:3px;">&#10003; MEJOR OPCI&Oacute;N</div>
             </td>
           </tr>
           <!-- B -->
           <tr>
             <td style="text-align:center;font-weight:900;color:#1e5bb0;">B</td>
-            <td><strong style="color:var(--navy);">$1,218</strong><br><small style="color:#9ca3af;">Con descuento iglesia</small></td>
+            <td><strong style="color:var(--navy);">$580</strong><br><small style="color:#9ca3af;">Con descuento 70%</small></td>
             <td><strong style="color:#059669;">Firebase $74.99</strong><br><small style="color:#9ca3af;">+ $3/mes</small></td>
-            <td><strong style="color:var(--grey-mid);">$13</strong><br><small style="color:#9ca3af;">.com · primer año</small></td>
+            <td><strong style="color:var(--grey-mid);">$13</strong><br><small style="color:#9ca3af;">.com &middot; primer a&ntilde;o</small></td>
             <td>
-              <strong style="color:var(--navy);font-size:13px;">$1,305.99</strong><br>
-              <small style="color:#9ca3af;">≈ Q10,122</small>
+              <strong style="color:var(--navy);font-size:13px;">$667.99</strong><br>
+              <small style="color:#9ca3af;">&asymp; Q5,177</small>
             </td>
             <td>
-              <strong style="color:var(--navy);font-size:13px;">$1,354.99</strong><br>
-              <small style="color:#9ca3af;">≈ Q10,501</small>
+              <strong style="color:var(--navy);font-size:13px;">$703.99</strong><br>
+              <small style="color:#9ca3af;">&asymp; Q5,456</small>
             </td>
           </tr>
           <!-- C -->
@@ -435,16 +484,16 @@
           <!-- E -->
           <tr style="background:#fef2f2;">
             <td style="text-align:center;font-weight:900;color:#dc2626;">E</td>
-            <td><strong style="color:var(--navy);">$1,218</strong><br><small style="color:#9ca3af;">Con descuento</small></td>
-            <td><strong style="color:#dc2626;">Servidor Físico $5,000</strong><br><small style="color:#9ca3af;">+ $460/mes</small></td>
+            <td><strong style="color:var(--navy);">$580</strong><br><small style="color:#9ca3af;">Con descuento 70%</small></td>
+            <td><strong style="color:#dc2626;">Servidor F&iacute;sico $5,000</strong><br><small style="color:#9ca3af;">+ $460/mes</small></td>
             <td><strong style="color:#059669;">$0</strong><br><small style="color:#9ca3af;">cen.crgm.app</small></td>
             <td>
-              <strong style="color:#dc2626;font-size:13px;">$6,218</strong><br>
-              <small style="color:#f87171;">≈ Q48,190</small>
+              <strong style="color:#dc2626;font-size:13px;">$5,580</strong><br>
+              <small style="color:#f87171;">&asymp; Q43,245</small>
             </td>
             <td>
-              <strong style="color:#dc2626;font-size:13px;">$11,738</strong><br>
-              <small style="color:#f87171;">≈ Q90,970</small><br>
+              <strong style="color:#dc2626;font-size:13px;">$11,100</strong><br>
+              <small style="color:#f87171;">&asymp; Q86,025</small><br>
               <small style="color:#9ca3af;font-size:9px;">+$5,520 servidor anual</small>
             </td>
           </tr>
@@ -477,7 +526,7 @@
 
     <!-- 01 Resumen Ejecutivo -->
     <div class="section">
-      <div class="section-title">01 - Resumen Ejecutivo</div>
+      <div class="section-title">01 &mdash; Resumen Ejecutivo</div>
       <div class="exec-summary">
         <p>
           Un proceso de <strong>censo parroquial o civil</strong> presenta un patron de uso altamente
@@ -505,8 +554,8 @@
     </div>
 
     <!-- 02 Costo Inicial de Desarrollo -->
-    <div class="section">
-      <div class="section-title">02 - Costo Inicial de Desarrollo y Puesta en Marcha</div>
+    <div class="section" id="seccion-02">
+      <div class="section-title">02 &mdash; Costo Inicial de Desarrollo y Puesta en Marcha</div>
 
       <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:14px 18px;margin-bottom:18px;display:flex;gap:12px;align-items:flex-start;">
         <div style="font-size:20px;flex-shrink:0;">&#128073;</div>
@@ -585,18 +634,19 @@
               <div style="display:flex;align-items:flex-start;gap:8px;">
                 <span style="font-size:16px;">&#9995;</span>
                 <div>
-                  <strong style="color:#92400e;font-size:12.5px;">Descuento por colaboración con la Iglesia — 40%</strong>
+                  <strong style="color:#92400e;font-size:12.5px;">Descuento por apoyo a la causa pastoral &mdash; 70%</strong>
                   <div style="font-size:11px;color:#a16207;margin-top:3px;line-height:1.6;">
-                    El desarrollador colabora activamente con la iglesia y aporta el 40% del costo como contribución al servicio pastoral de la parroquia en Izabal.
-                    <strong style="color:#92400e;">Ambas partes ganan:</strong> la iglesia recibe tecnología a precio accesible;
-                    el desarrollador cubre sus gastos reales y contribuye a la comunidad. La tarifa final de
-                    <strong style="color:#7c2d12;">$10.18/hr</strong> sigue siendo justa y real para el mercado local.
+                    El desarrollador apoya activamente la labor pastoral de la iglesia y aporta el 70% del costo como contribuci&oacute;n al servicio de la parroquia en Izabal.
+                    <strong style="color:#92400e;">Ambas partes ganan:</strong> la iglesia recibe tecnolog&iacute;a a precio muy accesible;
+                    el desarrollador cubre sus gastos esenciales y contribuye a la comunidad. La tarifa efectiva resulta en
+                    <strong style="color:#7c2d12;">Q36/hr ($4.65/hr)</strong> &mdash; un apoyo real a esta causa.
+                    Los m&oacute;dulos adicionales futuros se ofrecer&aacute;n con un descuento menor ya que este proyecto base ya fue subsidiado.
                   </div>
                 </div>
               </div>
             </td>
             <td style="text-align:right;font-weight:900;font-size:16px;color:#dc2626;border-bottom:1px dashed #fde68a;">
-              −$774<br><small style="color:#f59e0b;">−Q6,000</small>
+              &minus;$1,355<br><small style="color:#f59e0b;">&minus;Q10,500</small>
             </td>
           </tr>
 
@@ -604,16 +654,16 @@
           <tr style="background:var(--navy);">
             <td colspan="2" style="color:rgba(255,255,255,0.7);font-size:12px;border:none;padding:14px 20px;">
               <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);display:block;margin-bottom:3px;">Total a pagar</span>
-              115 horas · Q120/hr · 40% descuento iglesia · pago único · 3 meses garantía incluida
+              115 horas &middot; Q120/hr &middot; 70% descuento apoyo pastoral &middot; pago &uacute;nico &middot; 3 meses garant&iacute;a incluida
             </td>
             <td style="border:none;text-align:center;padding:14px 10px;">
               <div style="font-size:18px;font-weight:900;color:white;">115 hrs</div>
               <div style="font-size:10px;color:rgba(255,255,255,0.4);">ciclo completo</div>
             </td>
             <td style="text-align:right;border:none;padding:14px 20px;">
-              <div style="font-size:26px;font-weight:900;color:white;">$1,161</div>
-              <div style="font-size:13px;font-weight:700;color:var(--accent);">≈ Q9,000</div>
-              <div style="font-size:10px;color:rgba(255,255,255,0.45);margin-top:2px;">USD / GTQ · pago único</div>
+              <div style="font-size:26px;font-weight:900;color:white;">$580</div>
+              <div style="font-size:13px;font-weight:700;color:var(--accent);">&asymp; Q4,500</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.45);margin-top:2px;">USD / GTQ &middot; pago &uacute;nico</div>
             </td>
           </tr>
         </tbody>
@@ -624,8 +674,8 @@
         <div style="background:var(--grey-bg);border:1px solid var(--border);border-radius:10px;padding:15px 18px;">
           <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--grey-mid);margin-bottom:6px;">&#128200; Si se paga en cuotas</p>
           <p style="font-size:12.5px;color:var(--grey-dark);line-height:1.65;">
-            3 cuotas de <strong>$387 USD ≈ Q3,000</strong>:<br>
-            al inicio, al finalizar la programación, y al cierre de la garantía.
+            3 cuotas de <strong>$194 USD &asymp; Q1,500</strong>:<br>
+            al inicio, al finalizar la programaci&oacute;n, y al cierre de la garant&iacute;a.
           </p>
         </div>
         <div style="background:#fef9c3;border:1px solid #fde68a;border-radius:10px;padding:15px 18px;">
@@ -646,7 +696,7 @@
 
     <!-- ALT: Alternativas gratuitas vs esta app -->
     <div class="section">
-      <div class="section-title">03 — ¿Por Qué No Usar Google Forms, Excel o Papel?</div>
+      <div class="section-title">03 &mdash; &iquest;Por Qu&eacute; No Usar Google Forms, Excel o Papel?</div>
 
       <p style="font-size:12.5px;color:var(--grey-mid);margin-bottom:16px;line-height:1.7;">
         Antes de invertir en una app personalizada, es válido preguntarse: <strong style="color:var(--navy);">¿no podría usarse Google Forms, una hoja de Excel o simplemente papel?</strong>
@@ -654,7 +704,15 @@
       </p>
 
       <!-- Comparison table -->
-      <table class="comparison-table" style="font-size:11.5px;">
+      <table class="comparison-table table-compact" style="table-layout:fixed;width:100%;font-size:11px;">
+        <colgroup>
+          <col style="width:17%;">
+          <col style="width:21%;">
+          <col style="width:22%;">
+          <col style="width:12%;">
+          <col style="width:12%;">
+          <col style="width:16%;">
+        </colgroup>
         <thead>
           <tr>
             <th style="width:20%;">Herramienta</th>
@@ -757,63 +815,69 @@
 
     <!-- 03 Tabla Comparativa -->
     <div class="section">
-      <div class="section-title">03 - Tabla Comparativa Global de Infraestructura</div>
-      <table class="comparison-table">
+      <div class="section-title">04 &mdash; Tabla Comparativa Global de Infraestructura</div>
+      <table class="comparison-table table-compact" style="table-layout:fixed;width:100%;font-size:11.5px;">
+        <colgroup>
+          <col style="width:20%;">
+          <col style="width:40%;">
+          <col style="width:40%;">
+        </colgroup>
         <thead>
           <tr>
-            <th>Criterio</th>
-            <th>Servidor Fisico On-Premise</th>
-            <th class="col-recommended">Nube - Google / Firebase (Recomendada)</th>
+            <th style="padding:8px 10px;">Criterio</th>
+            <th style="padding:8px 10px;">Servidor F&iacute;sico On-Premise</th>
+            <th class="col-recommended" style="padding:8px 10px;">Nube &mdash; Google / Firebase <span style="font-weight:400;opacity:0.8;">(Recomendada)</span></th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>CAPEX Inicial</td>
-            <td class="bad">Alto - hardware, UPS, refrigeracion, rack, cableado</td>
-            <td class="good">Casi nulo - sin inversion inicial en equipos</td>
+            <td style="padding:7px 10px;font-weight:700;white-space:nowrap;">CAPEX Inicial</td>
+            <td class="bad" style="padding:7px 10px;">Alto &mdash; hardware, UPS, refrigeraci&oacute;n, rack, cableado</td>
+            <td class="good" style="padding:7px 10px;">Casi nulo &mdash; sin inversi&oacute;n inicial en equipos</td>
           </tr>
           <tr>
-            <td>OPEX Mensual</td>
-            <td class="bad">Fijo e ineludible - electricidad 24/7, IP fija, mantenimiento</td>
-            <td class="good">Variable - se paga solo por uso real consumido</td>
+            <td style="padding:7px 10px;font-weight:700;white-space:nowrap;">OPEX Mensual</td>
+            <td class="bad" style="padding:7px 10px;">Fijo e ineludible &mdash; electricidad 24/7, IP fija, mantenimiento</td>
+            <td class="good" style="padding:7px 10px;">Variable &mdash; se paga solo por uso real consumido</td>
           </tr>
           <tr>
-            <td>Mantenimiento</td>
-            <td class="bad">Alto - parches de SO, hardware, sala de servidores, soporte</td>
-            <td class="good">Bajo - gestionado completamente por Google</td>
+            <td style="padding:7px 10px;font-weight:700;white-space:nowrap;">Mantenimiento</td>
+            <td class="bad" style="padding:7px 10px;">Alto &mdash; parches de SO, hardware, sala de servidores, soporte</td>
+            <td class="good" style="padding:7px 10px;">Bajo &mdash; gestionado completamente por Google</td>
           </tr>
           <tr>
-            <td>Escalabilidad</td>
-            <td class="bad">Rigida - limitada al hardware adquirido</td>
-            <td class="good">Infinita - escala automaticamente en segundos</td>
+            <td style="padding:7px 10px;font-weight:700;white-space:nowrap;">Escalabilidad</td>
+            <td class="bad" style="padding:7px 10px;">R&iacute;gida &mdash; limitada al hardware adquirido</td>
+            <td class="good" style="padding:7px 10px;">Infinita &mdash; escala autom&aacute;ticamente en segundos</td>
           </tr>
           <tr>
-            <td>Disponibilidad</td>
-            <td class="bad">Depende del equipo local, energia y conexion</td>
-            <td class="good">SLA del 99.95% garantizado por Google Cloud</td>
+            <td style="padding:7px 10px;font-weight:700;white-space:nowrap;">Disponibilidad</td>
+            <td class="bad" style="padding:7px 10px;">Depende del equipo local, energ&iacute;a y conexi&oacute;n</td>
+            <td class="good" style="padding:7px 10px;">SLA del 99.95% garantizado por Google Cloud</td>
           </tr>
           <tr>
-            <td>Seguridad</td>
-            <td class="bad">Responsabilidad total del equipo interno</td>
-            <td class="good">ISO 27001, SOC 2, GDPR - gestionadas por Google</td>
+            <td style="padding:7px 10px;font-weight:700;white-space:nowrap;">Seguridad</td>
+            <td class="bad" style="padding:7px 10px;">Responsabilidad total del equipo interno</td>
+            <td class="good" style="padding:7px 10px;">ISO 27001, SOC&nbsp;2, GDPR &mdash; gestionadas por Google</td>
           </tr>
           <tr>
-            <td>Respaldo / DR</td>
-            <td class="bad">Debe disenarse y mantenerse manualmente</td>
-            <td class="good">Backups automaticos, replicacion multi-region</td>
+            <td style="padding:7px 10px;font-weight:700;white-space:nowrap;">Respaldo / DR</td>
+            <td class="bad" style="padding:7px 10px;">Debe dise&ntilde;arse y mantenerse manualmente</td>
+            <td class="good" style="padding:7px 10px;">Backups autom&aacute;ticos, replicaci&oacute;n multi-regi&oacute;n</td>
           </tr>
           <tr>
-            <td>Costo sin uso</td>
-            <td class="bad">100% del costo fijo mensual sin descuentos</td>
-            <td class="good"><strong>$0 USD</strong> - capa gratuita cubre el uso minimo</td>
+            <td style="padding:7px 10px;font-weight:700;white-space:nowrap;">Costo sin uso</td>
+            <td class="bad" style="padding:7px 10px;">100% del costo fijo mensual sin descuentos</td>
+            <td class="good" style="padding:7px 10px;"><strong>$0 USD</strong> &mdash; capa gratuita cubre el uso m&iacute;nimo</td>
           </tr>
         </tbody>
       </table>
     </div>
 
+
     <!-- 03 Detalle de Costes -->
     <div class="section">
-      <div class="section-title">04 - Detalle de Costes Minimos Mensuales</div>
+      <div class="section-title">05 &mdash; Detalle de Costos M&iacute;nimos Mensuales</div>
       <div class="options-grid">
 
         <!-- Opcion A -->
@@ -1078,7 +1142,7 @@
 
     <!-- DOMAIN SECTION -->
     <div class="section">
-      <div class="section-title">05 – Dominio y URL de Acceso</div>
+      <div class="section-title">06 &mdash; Dominio y URL de Acceso</div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
 
@@ -1182,7 +1246,7 @@
 
     <!-- 06 SIMULACION 60 MESES -->
     <div class="section">
-      <div class="section-title">06 — Simulación de Costos a 60 Meses (5 años)</div>
+      <div class="section-title">07 &mdash; Simulaci&oacute;n de Costos a 60 Meses (5 a&ntilde;os)</div>
 
       <!-- Monthly cost comparison clear -->
       <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--navy);margin-bottom:12px;">Costo mensual fijo vs. variable</p>
@@ -1196,7 +1260,7 @@
           </div>
           <div style="padding:12px 16px;">
             <p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#991b1b;margin-bottom:8px;">📍 Tarifas reales Izabal, Guatemala — 2026</p>
-            <table style="width:100%;font-size:12px;border-collapse:collapse;">
+            <table class="table-compact" style="width:100%;font-size:12px;border-collapse:collapse;">
               <tr style="border-bottom:1px solid #fee2e2;">
                 <td style="padding:5px 0;color:#6b7280;">Electricidad ENERGUATE<small style="display:block;color:#9ca3af;">Servidor 250W + refrigeración (clima tropical) · Q1.80–2.20/kWh · ~280 kWh/mes</small></td>
                 <td style="text-align:right;font-weight:700;color:#dc2626;">$60 – $90</td>
@@ -1237,7 +1301,7 @@
             <p style="font-size:11px;color:#9ca3af;">Solo se paga cuando se usa activamente</p>
           </div>
           <div style="padding:12px 16px;">
-            <table style="width:100%;font-size:12px;border-collapse:collapse;">
+            <table class="table-compact" style="width:100%;font-size:12px;border-collapse:collapse;">
               <tr style="border-bottom:1px solid #bbf7d0;">
                 <td style="padding:5px 0;color:#6b7280;">11 meses sin censo activo</td>
                 <td style="text-align:right;font-weight:700;color:#059669;">$0 – $2</td>
@@ -1271,7 +1335,14 @@
       <!-- 60-month simulation table -->
       <p style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--navy);margin-bottom:10px;">Proyección acumulada mes a mes (5 años)</p>
 
-      <table class="comparison-table" style="font-size:11.5px;">
+      <table class="comparison-table table-compact" style="table-layout:fixed;width:100%;font-size:11px;">
+        <colgroup>
+          <col style="width:13%;">
+          <col style="width:22%;">
+          <col style="width:22%;">
+          <col style="width:22%;">
+          <col style="width:21%;">
+        </colgroup>
         <thead>
           <tr>
             <th style="width:15%;">Período</th>
@@ -1384,7 +1455,7 @@
             <p style="font-size:11px;font-weight:700;color:#991b1b;text-transform:uppercase;letter-spacing:0.08em;">🖥️ Riesgos — Servidor Físico</p>
           </div>
           <div style="padding:12px 14px;">
-            <table style="width:100%;font-size:11.5px;border-collapse:collapse;">
+            <table class="table-compact" style="width:100%;font-size:11.5px;border-collapse:collapse;">
               <tr style="border-bottom:1px solid #fee2e2;">
                 <td style="padding:6px 0;"><strong style="color:#dc2626;">🔴 Alto</strong> Falla de disco duro o memoria RAM</td>
                 <td style="text-align:right;color:#9ca3af;font-size:10px;">+$200–800</td>
@@ -1426,7 +1497,7 @@
             <p style="font-size:11px;font-weight:700;color:#065f46;text-transform:uppercase;letter-spacing:0.08em;">☁️ Riesgos — Firebase / Nube</p>
           </div>
           <div style="padding:12px 14px;">
-            <table style="width:100%;font-size:11.5px;border-collapse:collapse;">
+            <table class="table-compact" style="width:100%;font-size:11.5px;border-collapse:collapse;">
               <tr style="border-bottom:1px solid #bbf7d0;">
                 <td style="padding:6px 0;"><strong style="color:#f59e0b;">🟡 Medio</strong> Costo inesperado si hay tráfico anormal</td>
                 <td style="text-align:right;color:#9ca3af;font-size:10px;">Con alertas: $0 extra</td>
@@ -1465,10 +1536,9 @@
       </div>
     </div>
 
-    <!-- 07 Conclusion -->
     <!-- 08 Módulos adicionales -->
     <div class="section">
-      <div class="section-title">08 — Módulos Adicionales — La App Puede Crecer</div>
+      <div class="section-title">08 &mdash; M&oacute;dulos Adicionales &mdash; La App Puede Crecer</div>
 
       <div style="background:linear-gradient(135deg,#f0f4ff,#e8edff);border:1px solid #c7d2fe;border-radius:10px;padding:14px 18px;margin-bottom:18px;display:flex;gap:10px;align-items:flex-start;">
         <span style="font-size:18px;">&#128161;</span>
@@ -1581,23 +1651,55 @@
 
           <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--navy);margin-bottom:10px;">&#127891; Avanzados (futuro)</p>
 
-          <div style="border:1px solid #dce3ec;border-radius:10px;overflow:hidden;">
+          <div style="border:1px solid #dce3ec;border-radius:10px;overflow:hidden;margin-bottom:12px;">
             <table style="width:100%;font-size:12px;border-collapse:collapse;">
               <tr style="background:#fef2f2;border-bottom:1px solid #dce3ec;">
                 <td style="padding:9px 12px;" colspan="2">
-                  <strong style="color:#991b1b;">💳 Donaciones y Ofrendas en Línea</strong><br>
-                  <small style="color:#6b7280;">Integración con pasarela de pago (Stripe o PayPal). Ofrendas y limosnas en línea desde cualquier lugar.</small>
+                  <strong style="color:#991b1b;">&#128179; Donaciones y Ofrendas en L&iacute;nea</strong><br>
+                  <small style="color:#6b7280;">Integraci&oacute;n con pasarela de pago (Stripe o PayPal). Ofrendas y limosnas en l&iacute;nea desde cualquier lugar.</small>
                 </td>
-                <td style="padding:9px 12px;text-align:right;font-weight:700;white-space:nowrap;">~$780<br><small style="color:#9ca3af;">≈ Q6,045</small></td>
+                <td style="padding:9px 12px;text-align:right;font-weight:700;white-space:nowrap;">~$780<br><small style="color:#9ca3af;">&asymp; Q6,045</small></td>
               </tr>
               <tr>
                 <td style="padding:9px 12px;" colspan="2">
-                  <strong style="color:#991b1b;">📡 App Móvil Nativa (Android / iOS)</strong><br>
-                  <small style="color:#6b7280;">Versión instalable en el celular con notificaciones push, acceso sin navegador. La app actual ya funciona en móvil como PWA.</small>
+                  <strong style="color:#991b1b;">&#128225; App M&oacute;vil Nativa (Android / iOS)</strong><br>
+                  <small style="color:#6b7280;">Versi&oacute;n instalable en el celular con notificaciones push, acceso sin navegador. La app actual ya funciona en m&oacute;vil como PWA.</small>
                 </td>
-                <td style="padding:9px 12px;text-align:right;font-weight:700;white-space:nowrap;">~$1,200<br><small style="color:#9ca3af;">≈ Q9,300</small></td>
+                <td style="padding:9px 12px;text-align:right;font-weight:700;white-space:nowrap;">~$1,200<br><small style="color:#9ca3af;">&asymp; Q9,300</small></td>
               </tr>
             </table>
+          </div>
+
+          <!-- Nuevo: Digitalización de Archivos Históricos -->
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#7c3aed;margin-bottom:10px;">&#128218; Digitalizaci&oacute;n de Archivos Hist&oacute;ricos</p>
+
+          <div style="border:2px solid #c4b5fd;border-radius:10px;overflow:hidden;">
+            <table style="width:100%;font-size:12px;border-collapse:collapse;">
+              <tr style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-bottom:1px solid #c4b5fd;">
+                <td style="padding:9px 12px;" colspan="2">
+                  <strong style="color:#5b21b6;">&#128396; Libros de Bautizos, Confirmaciones y Comuniones</strong><br>
+                  <small style="color:#6b7280;">Digitalizaci&oacute;n de libros parroquiales hist&oacute;ricos: ingreso de registros antiguos con nombre, fecha, padrinos, p&aacute;rroco y folio. B&uacute;squeda instant&aacute;nea por nombre o fecha. Exportaci&oacute;n de certificados en PDF. Fotos del libro original adjuntables.</small>
+                </td>
+                <td style="padding:9px 12px;text-align:right;font-weight:700;white-space:nowrap;color:#5b21b6;">~$680<br><small style="color:#9ca3af;">&asymp; Q5,270</small></td>
+              </tr>
+              <tr style="border-bottom:1px solid #c4b5fd;">
+                <td style="padding:9px 12px;" colspan="2">
+                  <strong style="color:#5b21b6;">&#128203; Libros de Matrimonios y Defunciones</strong><br>
+                  <small style="color:#6b7280;">Registro digital de actas de matrimonios y defunciones parroquiales. Datos de testigos, fechas, notas marginales y n&uacute;mero de tomo/folio. Compatible con los libros ya existentes en la parroquia.</small>
+                </td>
+                <td style="padding:9px 12px;text-align:right;font-weight:700;white-space:nowrap;color:#5b21b6;">~$520<br><small style="color:#9ca3af;">&asymp; Q4,030</small></td>
+              </tr>
+              <tr>
+                <td style="padding:9px 12px;" colspan="2">
+                  <strong style="color:#5b21b6;">&#128269; B&uacute;squeda Unificada de Registros Sacramentales</strong><br>
+                  <small style="color:#6b7280;">M&oacute;dulo central que une todos los libros: buscar a una persona y ver todos sus sacramentos registrados (bautizo, comuni&oacute;n, confirmaci&oacute;n, matrimonio). Ideal para emitir constancias completas de vida sacramental.</small>
+                </td>
+                <td style="padding:9px 12px;text-align:right;font-weight:700;white-space:nowrap;color:#5b21b6;">~$390<br><small style="color:#9ca3af;">&asymp; Q3,023</small></td>
+              </tr>
+            </table>
+            <div style="background:#ede9fe;padding:9px 12px;font-size:10.5px;color:#5b21b6;border-top:1px solid #c4b5fd;">
+              <strong>&#9432; Nota sobre descuento:</strong> Estos m&oacute;dulos se ofrecer&aacute;n con un descuento menor al del proyecto base, ya que la inversi&oacute;n inicial en infraestructura y programaci&oacute;n ya fue subsidiada. El descuento aplicable ser&aacute; negociable seg&uacute;n el m&oacute;dulo y el momento de contrataci&oacute;n.
+            </div>
           </div>
         </div>
       </div>
@@ -1621,9 +1723,9 @@
       </div>
     </div>
 
-    <!-- 07 Conclusion -->
+    <!-- 09 Conclusion -->
     <div class="section" style="margin-bottom:0;">
-      <div class="section-title">07 - Conclusión y Recomendación Final</div>
+      <div class="section-title">09 &mdash; Conclusi&oacute;n y Recomendaci&oacute;n Final</div>
       <div class="conclusion">
         <h3>Firebase Serverless es la eleccion inteligente</h3>
         <p>
